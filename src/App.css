@@ -1,0 +1,553 @@
+ /* تنسيقات شريط التنقل (Navbar) */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 50px;
+  background: rgba(26, 27, 38, 0.7); /* خلفية كحلية شفافة */
+  backdrop-filter: blur(15px); /* تأثير الزجاج */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 1000; /* عشان يفضل فوق كل العناصر */
+}
+
+.nav-logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #a0a0b5;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #00b894;
+}
+
+.nav-login-btn {
+  padding: 8px 25px;
+  border: 1px solid #00b894;
+  border-radius: 20px;
+  background: transparent;
+  color: #00b894;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-login-btn:hover {
+  background: #00b894;
+  color: white;
+  box-shadow: 0 0 15px rgba(0, 184, 148, 0.4);
+}
+
+/* عشان المحتوى الأساسي ميتغطاش بالـ Navbar */
+.landing-page-wrapper {
+  padding-top: 70px; 
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  /* السر هنا: ضفنا مسافة 100 بيكسل من فوق عشان تفضي مكان للـ Navbar */
+  padding: 100px 20px 40px; 
+  text-align: center;
+}
+/* ----------------------------------- */
+/* تم تعديل المسافات هنا لتقليل الفراغ */
+/* ----------------------------------- */
+.landing-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: auto; /* تم التعديل لـ auto */
+  text-align: center;
+  padding: 20px;
+}
+
+.hero-section {
+  min-height: 50vh; /* تم تقليل الارتفاع */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 40px; /* تم تقليل المسافة العلوية */
+  padding-bottom: 20px; /* إضافة مسافة سفلية صغيرة */
+}
+/* ----------------------------------- */
+
+/* توهج وإطار الصورة الرئيسية */
+.hero-wrapper {
+  background: transparent;
+  padding: 5px;
+  border-radius: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.4); /* تأثير التوهج الأبيض */
+  margin-bottom: 20px;
+  display: inline-flex;
+}
+
+.hero-image {
+  width: 160px;
+  border-radius: 15px;
+}
+
+/* ألوان النصوص */
+.title {
+  font-size: 42px;
+  color: #a2d2ff; /* أزرق فاتح */
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: #b7e4c7; /* أخضر فاتح */
+  margin-bottom: 40px;
+}
+
+.description {
+  max-width: 600px;
+  color: #a0a0b5;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* تنسيق الكروت الشفافة */
+.dashboard-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05); /* شفافية زجاجية */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 20px;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.card-icon {
+  font-size: 35px;
+  margin-bottom: 15px;
+}
+
+.card h3 {
+  font-size: 16px;
+  color: #b7e4c7;
+  font-weight: bold;
+}
+
+/* زرار صفحة البداية */
+.login-button {
+  padding: 15px 40px;
+  border: none;
+  border-radius: 30px;
+  background: #00b894;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 0;
+}
+
+.login-button:hover {
+  background: #009f80;
+  transform: scale(1.05);
+}
+
+/* ترتيب الأزرار جنب بعض */
+.button-wrapper, .button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* زرار الفيديو (بإطار زجاجي) */
+.video-button {
+  padding: 15px 30px;
+  border: 2px solid #00b894;
+  border-radius: 30px;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.video-button:hover {
+  background: rgba(0, 184, 148, 0.1);
+  box-shadow: 0 0 15px rgba(0, 184, 148, 0.3);
+}
+
+/* ----------------------------------- */
+/* تنسيقات نافذة الفيديو (آمنة تماماً) */
+/* ----------------------------------- */
+.video-overlay, .video-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85); /* خلفية سوداء شفافة تغطي الشاشة */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+}
+
+.video-modal, .video-modal-content {
+  background: #1a1b26;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 30px;
+  width: 90%;
+  max-width: 700px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.video-placeholder {
+  width: 100%;
+  height: 350px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #00b894;
+  border: 2px dashed #00b894;
+}
+
+.close-btn {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: #ff4757;
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
+  transition: transform 0.2s;
+}
+
+.close-btn:hover {
+  transform: scale(1.1);
+}
+
+/* تنسيقات كارت تسجيل الدخول */
+.login-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left; 
+}
+
+.input-group label {
+  color: #a2d2ff;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.form-input {
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #00b894;
+  box-shadow: 0 0 10px rgba(0, 184, 148, 0.3);
+}
+
+.submit-button {
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: #00b894;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+  margin-top: 15px;
+}
+
+.submit-button:hover {
+  background: #009f80;
+  transform: translateY(-2px);
+}
+
+/* قسم القصة */
+.story-section {
+  min-height: auto; 
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px 60px; 
+  background: transparent; 
+}
+
+/* الكارت الزجاجي للقصة */
+.story-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 50px;
+  max-width: 800px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.section-title {
+  font-size: 38px;
+  color: #00b894; 
+  margin-bottom: 25px;
+}
+
+.story-text {
+  font-size: 18px;
+  color: #d1d1e0;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+/* قسم المميزات */
+.features-section {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
+  background: #1a1b26; 
+}
+
+/* شبكة كروت المميزات */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1100px;
+  width: 100%;
+  margin-top: 40px;
+}
+
+/* كارت الميزة الواحدة */
+.feature-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 30px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: #00b894;
+  box-shadow: 0 15px 30px rgba(0, 184, 148, 0.15);
+}
+
+.feature-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+}
+
+.feature-card h3 {
+  font-size: 22px;
+  color: #a2d2ff;
+  margin-bottom: 15px;
+}
+
+.feature-card p {
+  font-size: 15px;
+  color: #a0a0b5;
+  line-height: 1.6;
+}
+
+
+
+
+/* تنسيقات التبديل بين الدخول وإنشاء الحساب */
+.toggle-auth {
+  margin-top: 25px;
+  font-size: 15px;
+  color: #a0a0b5;
+}
+
+.toggle-link {
+  color: #00b894;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.toggle-link:hover {
+  color: #009f80;
+  text-decoration: underline;
+}
+
+
+
+/* ----------------------------------- */
+/* تنسيقات الفوتر (Footer) */
+/* ----------------------------------- */
+.footer-container {
+  background: #13141c; /* لون أغمق درجة من الخلفية الأساسية للموقع */
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 60px 20px 20px;
+  color: #a0a0b5;
+  width: 100%;
+  margin-top: auto; /* مهم جداً عشان الفوتر ينزل لآخر الصفحة دائماً */
+}
+
+.footer-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+  text-align: left; /* تقدري تغيريها لـ right لو الموقع بالعربي */
+}
+
+.footer-logo {
+  font-size: 28px;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.footer-desc {
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.footer-section h3 {
+  color: white;
+  font-size: 18px;
+  margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+}
+
+/* خط صغير تحت العناوين كشكل جمالي */
+.footer-section h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 40px;
+  height: 2px;
+  background: #00b894;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a {
+  color: #a0a0b5;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #00b894;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 14px;
+}
+
+/* إضافة مهمة عشان نضمن إن الفوتر دايماً في آخر الصفحة مهما كان المحتوى قليل */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.video-modal {
+  background: #1a1b26 !important; /* ضفنا !important للتأكد */
+  border: 2px solid #00b894 !important;
+  /* ... باقي الخصائص ... */
+}

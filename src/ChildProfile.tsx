@@ -6,12 +6,10 @@ import "./App.css";
 export default function ChildProfile() {
   const navigate = useNavigate();
   
-  // حالات لحفظ الصورة، الاسم، والنقاط
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [childName, setChildName] = useState("بطل تواصل 🦸‍♂️");
-  const [totalPoints, setTotalPoints] = useState(0); // 👈 حالة جديدة لحفظ النقاط الحقيقية
+  const [totalPoints, setTotalPoints] = useState(0); 
 
-  // استرجاع البيانات من الـ localStorage أول ما الصفحة تفتح
   useEffect(() => {
     // 1. استرجاع الصورة
     const savedImage = localStorage.getItem("childProfilePic");
@@ -19,14 +17,19 @@ export default function ChildProfile() {
       setProfileImage(savedImage);
     }
 
-    // 2. استرجاع النقاط الحقيقية المجمعة 👈 (ده اللي كان ناقص)
+    // 2. استرجاع الاسم (من childName أو من userName اللي اتسجل بيه وقت الـ Signup)
+    const savedName = localStorage.getItem("childName") || localStorage.getItem("userName");
+    if (savedName && savedName.trim() !== "") {
+      setChildName(savedName);
+    }
+
+    // 3. استرجاع النقاط
     const savedPoints = localStorage.getItem("childPoints");
     if (savedPoints) {
       setTotalPoints(parseInt(savedPoints));
     }
   }, []);
 
-  // دالة التعامل مع رفع الصورة
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -34,19 +37,24 @@ export default function ChildProfile() {
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setProfileImage(base64String);
-        // حفظ الصورة في المتصفح عشان تفضل موجودة
         localStorage.setItem("childProfilePic", base64String);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setChildName(newName);
+    localStorage.setItem("childName", newName);
+    localStorage.setItem("userName", newName); // تحديثه في الاثنين عشان يقرأ في كل مكان
+  };
+
   return (
     <div className="container" style={{ paddingTop: "140px", direction: "rtl", textAlign: "right", minHeight: "100vh", paddingBottom: "80px", paddingRight: "20px", paddingLeft: "20px" }}>
       
-      {/* شريط علوي */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px", maxWidth: "800px", margin: "0 auto 30px" }}>
-        <h1 style={{ fontSize: "32px", color: "white" }}>ملفي الشخصي 🌟</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px", maxWidth: "800px", margin: "0 auto 30px", flexWrap: "wrap", gap: "15px" }}>
+        <h1 style={{ fontSize: "32px", color: "white", textAlign: "center", width: "100%" }}>ملفي الشخصي 🌟</h1>
         <button 
           onClick={() => navigate('/dashboard')} 
           style={{ 
@@ -57,7 +65,8 @@ export default function ChildProfile() {
             borderRadius: "12px", 
             cursor: "pointer", 
             fontWeight: "bold",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
+            boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+            margin: "0 auto"
           }}
         >
           العودة للرئيسية 🏠
@@ -70,7 +79,6 @@ export default function ChildProfile() {
         style={{ maxWidth: "800px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.9)", padding: "40px", borderRadius: "30px", border: "3px solid #fdcb6e", textAlign: "center", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}
       >
         
-        {/* منطقة الصورة الشخصية */}
         <div style={{ position: "relative", width: "180px", height: "180px", margin: "0 auto 20px" }}>
           <div style={{ 
             width: "100%", 
@@ -91,7 +99,6 @@ export default function ChildProfile() {
             )}
           </div>
           
-          {/* زر رفع الصورة */}
           <label style={{ 
             position: "absolute", 
             bottom: "0", 
@@ -112,12 +119,12 @@ export default function ChildProfile() {
           </label>
         </div>
 
-        {/* تعديل الاسم */}
+        {/* تعديل وعرض اسم الطفل */}
         <div style={{ marginBottom: "30px" }}>
           <input 
             type="text" 
             value={childName}
-            onChange={(e) => setChildName(e.target.value)}
+            onChange={handleNameChange}
             style={{ 
               fontSize: "28px", 
               fontWeight: "bold", 
@@ -126,17 +133,16 @@ export default function ChildProfile() {
               border: "none", 
               borderBottom: "2px solid #a0a0b5", 
               textAlign: "center", 
-              width: "250px",
+              width: "100%",
+              maxWidth: "350px",
               outline: "none",
               paddingBottom: "5px"
             }}
           />
         </div>
 
-        {/* إحصائيات ونياشين الطفل */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "15px", marginTop: "30px" }}>
           
-          {/* 👈 هنا خلينا النقاط تظهر من المتغير totalPoints بدل ما كانت 150 ثابتة */}
           <div style={{ backgroundColor: "rgba(255,255,255,0.05)", padding: "20px", borderRadius: "20px", border: "1px solid #e84393" }}>
             <span style={{ fontSize: "40px" }}>🏅</span>
             <h3 style={{ color: "#fdcb6e", margin: "10px 0 5px" }}>النقاط</h3>
@@ -155,6 +161,15 @@ export default function ChildProfile() {
             <p style={{ color: "white", fontSize: "24px", fontWeight: "bold" }}>5</p>
           </div>
 
+        </div>
+
+        <div style={{ marginTop: "40px", backgroundColor: "rgba(253, 203, 110, 0.1)", border: "2px dashed #fdcb6e", padding: "20px", borderRadius: "20px", textAlign: "right" }}>
+          <h3 style={{ color: "#fdcb6e", marginBottom: "10px", fontSize: "20px", display: "flex", alignItems: "center", gap: "8px" }}>
+            ⭐المكافات والإنجازات
+          </h3>
+          <p style={{ color: "#a0a0b5", fontSize: "14px", margin: 0 }}>
+            كل نجمة أو شهادة تقدير يرسلها لك "بطلك السري" هنا تضاف مباشرة إلى رصيد نقاطك وحسناتك.. واصل الإنجاز يا بطل! 🚀
+          </p>
         </div>
 
       </motion.div>

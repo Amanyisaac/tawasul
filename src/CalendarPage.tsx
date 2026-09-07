@@ -89,7 +89,7 @@ function CalendarPage() {
     const days = [];
     // أيام فارغة قبل بداية الشهر
     for (let i = 0; i < firstDayOfMonth; i++) {
-      days.push(<div key={`empty-${i}`} className="empty-day" style={{ padding: "20px" }}></div>);
+      days.push(<div key={`empty-${i}`} className="empty-day" style={{ padding: "10px 5px" }}></div>);
     }
     // أيام الشهر الفعلية
     for (let day = 1; day <= daysInMonth; day++) {
@@ -106,7 +106,7 @@ function CalendarPage() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setSelectedDate(date)}
           style={{
-            padding: "20px",
+            padding: "10px 5px", // تصغير الحجم عشان يناسب الموبايل
             backgroundColor: isToday ? "#00b894" : "rgba(255, 255, 255, 0.05)",
             color: isToday ? "white" : "#e0e0e0",
             borderRadius: "15px",
@@ -116,7 +116,7 @@ function CalendarPage() {
             textAlign: "center"
           }}
         >
-          <span style={{ fontSize: "20px", fontWeight: "bold" }}>{day}</span>
+          <span style={{ fontSize: "16px", fontWeight: "bold" }}>{day}</span>
           {/* نقطة صغيرة تدل إن اليوم ده فيه مهام */}
           {hasTasks && (
             <div style={{
@@ -204,21 +204,21 @@ function CalendarPage() {
         التقويم والمهام 📅
       </motion.h1>
 
-      <div style={{ maxWidth: "800px", margin: "0 auto", backgroundColor: "rgba(0,0,0,0.5)", padding: "30px", borderRadius: "20px" }}>
-        {/* رأس التقويم (الشهر والسنة) */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
-          <button onClick={nextMonth} style={{ padding: "10px 20px", borderRadius: "10px", backgroundColor: "#00b894", color: "white", border: "none", cursor: "pointer", fontWeight: "bold" }}>الشهر التالي ◀</button>
-          <h2 style={{ color: "white", margin: 0 }}>{months[month]} {year}</h2>
-          <button onClick={prevMonth} style={{ padding: "10px 20px", borderRadius: "10px", backgroundColor: "#00b894", color: "white", border: "none", cursor: "pointer", fontWeight: "bold" }}>▶ الشهر السابق</button>
+      <div style={{ maxWidth: "800px", width: "100%", margin: "0 auto", backgroundColor: "rgba(0,0,0,0.5)", padding: "20px", borderRadius: "20px" }}>
+        {/* رأس التقويم (الشهر والسنة) مع استخدام flexWrap للموبايل */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px", flexWrap: "wrap", gap: "10px" }}>
+          <button onClick={nextMonth} style={{ padding: "8px 15px", borderRadius: "10px", backgroundColor: "#00b894", color: "white", border: "none", cursor: "pointer", fontWeight: "bold", fontSize: "14px" }}>الشهر التالي ◀</button>
+          <h2 style={{ color: "white", margin: 0, fontSize: "20px" }}>{months[month]} {year}</h2>
+          <button onClick={prevMonth} style={{ padding: "8px 15px", borderRadius: "10px", backgroundColor: "#00b894", color: "white", border: "none", cursor: "pointer", fontWeight: "bold", fontSize: "14px" }}>▶ الشهر السابق</button>
         </div>
 
         {/* أيام الأسبوع */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "10px", marginBottom: "15px", textAlign: "center", color: "#fdcb6e", fontWeight: "bold" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "5px", marginBottom: "15px", textAlign: "center", color: "#fdcb6e", fontWeight: "bold", fontSize: "14px" }}>
           {daysOfWeek.map(day => <div key={day}>{day}</div>)}
         </div>
 
         {/* شبكة الأيام */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "10px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "5px" }}>
           {renderDays()}
         </div>
       </div>
@@ -244,7 +244,7 @@ function CalendarPage() {
               <ul style={{ listStyle: "none", padding: 0, color: "white", marginBottom: "20px", maxHeight: "250px", overflowY: "auto" }}>
                 {(tasks[formatDateKey(selectedDate)] || []).length > 0 ? (
                   tasks[formatDateKey(selectedDate)].map((task, index) => (
-                    <li key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px", backgroundColor: "rgba(255,255,255,0.1)", marginBottom: "10px", borderRadius: "10px" }}>
+                    <li key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", padding: "12px", backgroundColor: "rgba(255,255,255,0.1)", marginBottom: "10px", borderRadius: "10px" }}>
                       <span style={{ fontSize: "16px", fontWeight: "bold" }}>📝 {task}</span>
                       
                       {/* أزرار الإتمام والحذف */}
@@ -271,13 +271,13 @@ function CalendarPage() {
               </ul>
 
               {/* نموذج إضافة مهمة */}
-              <form onSubmit={addTask} style={{ display: "flex", gap: "10px" }}>
+              <form onSubmit={addTask} style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
                 <input 
                   type="text" 
                   value={newTask} 
                   onChange={(e) => setNewTask(e.target.value)} 
                   placeholder="اكتب مهمة جديدة..."
-                  style={{ flex: 1, padding: "12px", borderRadius: "10px", border: "none", outline: "none", fontFamily: "inherit", fontSize: "16px" }}
+                  style={{ flex: 1, minWidth: "200px", padding: "12px", borderRadius: "10px", border: "none", outline: "none", fontFamily: "inherit", fontSize: "16px" }}
                 />
                 <button type="submit" style={{ padding: "12px 25px", backgroundColor: "#0984e3", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold", fontSize: "16px" }}>
                   ➕ إضافة

@@ -2,17 +2,30 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
 
+// 🌟 استيراد الصور بشكل صحيح عشان تترفع مع المشروع 🌟
+import wudu1 from "./assets/wudu1.png";
+import wudu2 from "./assets/wudu2.png";
+import wudu3 from "./assets/wudu3.png";
+import wudu4 from "./assets/wudu4.png";
+import wudu5 from "./assets/wudu5.png";
+import wudu6 from "./assets/wudu6.png";
+import wudu7 from "./assets/wudu7.png";
+import wudu8 from "./assets/wudu8.png";
+import wudu9 from "./assets/wudu9.png";
+import wudu10 from "./assets/wudu10.png";
+
+// بيانات خطوات الوضوء بالترتيب مع استخدام المتغيرات
 const wuduSteps = [
-  { id: 1, title: "النية والبسملة", desc: "أن تنوي الوضوء بقلبك، ثم تقول: بسم الله.", img: "src/assets/wudu1.png" },
-  { id: 2, title: "غسل الكفين", desc: "غسل الكفين إلى الرسغين ثلاث مرات.",img: "src/assets/wudu2.png" },
-  { id: 3, title: "المضمضة", desc: "إدخال الماء في الفم والمضمضة ثلاث مرات.",   img: "src/assets/wudu3.png" },
-  { id: 4, title: "الاستنشاق والاستنثار", desc: "جذب الماء بالأنف وإخراجه ثلاث مرات.",  img: "src/assets/wudu4.png" },
-  { id: 5, title: "غسل الوجه", desc: "غسل الوجه بالكامل من منبت الشعر إلى الذقن ثلاث مرات.", img: "src/assets/wudu5.png" },
-  { id: 6, title: "غسل اليدين للمرفقين", desc: "غسل اليد اليمنى ثم اليسرى إلى المرفقين ثلاث مرات.", img: "src/assets/wudu6.png" },
-  { id: 7, title: "مسح الرأس", desc: "مسح الرأس بالماء مرة واحدة من الأمام للخلف ثم العودة.", img: "src/assets/wudu7.png" },
-  { id: 8, title: "مسح الأذنين", desc: "مسح الأذنين من الداخل والخارج بالماء مرة واحدة.",   img: "src/assets/wudu8.png" },
-  { id: 9, title: "غسل الرجلين", desc: "غسل الرجل اليمنى ثم اليسرى مع الكعبين ثلاث مرات.",img: "src/assets/wudu9.png" },
-  { id: 10, title: "دعاء ما بعد الوضوء", desc: "أشهد أن لا إله إلا الله، وأشهد أن محمداً عبده ورسوله. اللهم اجعلني من التوابين واجعلني من المتطهرين.", img: "src/assets/wudu10.png" }
+  { id: 1, title: "النية والبسملة", desc: "أن تنوي الوضوء بقلبك، ثم تقول: بسم الله.", img: wudu1 },
+  { id: 2, title: "غسل الكفين", desc: "غسل الكفين إلى الرسغين ثلاث مرات.", img: wudu2 },
+  { id: 3, title: "المضمضة", desc: "إدخال الماء في الفم والمضمضة ثلاث مرات.",   img: wudu3 },
+  { id: 4, title: "الاستنشاق والاستنثار", desc: "جذب الماء بالأنف وإخراجه ثلاث مرات.",  img: wudu4 },
+  { id: 5, title: "غسل الوجه", desc: "غسل الوجه بالكامل من منبت الشعر إلى الذقن ثلاث مرات.", img: wudu5 },
+  { id: 6, title: "غسل اليدين للمرفقين", desc: "غسل اليد اليمنى ثم اليسرى إلى المرفقين ثلاث مرات.", img: wudu6 },
+  { id: 7, title: "مسح الرأس", desc: "مسح الرأس بالماء مرة واحدة من الأمام للخلف ثم العودة.", img: wudu7 },
+  { id: 8, title: "مسح الأذنين", desc: "مسح الأذنين من الداخل والخارج بالماء مرة واحدة.",   img: wudu8 },
+  { id: 9, title: "غسل الرجلين", desc: "غسل الرجل اليمنى ثم اليسرى مع الكعبين ثلاث مرات.", img: wudu9 },
+  { id: 10, title: "دعاء ما بعد الوضوء", desc: "أشهد أن لا إله إلا الله، وأشهد أن محمداً عبده ورسوله. اللهم اجعلني من التوابين واجعلني من المتطهرين.", img: wudu10 }
 ];
 
 function WuduPage() {
@@ -32,7 +45,6 @@ function WuduPage() {
       localStorage.setItem("childPoints", newPoints.toString());
       setTotalPoints(newPoints);
       
-      // إظهار المودال الاحترافي بدلاً من الـ alert العادي
       setTimeout(() => {
         setShowPointsModal(true);
       }, 500);
@@ -52,7 +64,6 @@ function WuduPage() {
   return (
     <div className="container" style={{ paddingTop: "100px", direction: "rtl", textAlign: "center", minHeight: "100vh", position: "relative" }}>
       
-      {/* نافذة النقاط المنبثقة (Modal) */}
       <AnimatePresence>
         {showPointsModal && (
           <div style={{ 
@@ -69,6 +80,7 @@ function WuduPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.5 }}
+              /* 👇 إضافة عرض 90% للمودال */
               style={{ 
                 backgroundColor: "#1e272e", 
                 padding: "40px", 
@@ -76,6 +88,7 @@ function WuduPage() {
                 border: "2px solid #00b894", 
                 textAlign: "center", 
                 maxWidth: "400px",
+                width: "90%",
                 boxShadow: "0 20px 50px rgba(0, 184, 148, 0.3)"
               }}
             >
@@ -104,7 +117,8 @@ function WuduPage() {
                   fontSize: "18px", 
                   cursor: "pointer", 
                   fontWeight: "bold",
-                  boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)"
+                  boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)",
+                  width: "100%"
                 }}
               >
                 استمرار 👍
@@ -123,12 +137,12 @@ function WuduPage() {
         تعلم الوضوء 💧
       </motion.h1>
 
-      <p style={{ color: "#a0a0b5", fontSize: "18px", marginBottom: "40px" }}>
+      <p style={{ color: "#a0a0b5", fontSize: "18px", marginBottom: "40px", padding: "0 15px" }}>
         خطوة بخطوة لنتعلم كيف نتوضأ بشكل صحيح
       </p>
 
       {!isCompleted && (
-        <div style={{ maxWidth: "700px", margin: "0 auto 40px", backgroundColor: "rgba(255,255,255,0.05)", borderRadius: "20px", height: "8px", overflow: "hidden" }}>
+        <div style={{ maxWidth: "700px", width: "90%", margin: "0 auto 40px", backgroundColor: "rgba(255,255,255,0.05)", borderRadius: "20px", height: "8px", overflow: "hidden" }}>
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${((currentStep + 1) / wuduSteps.length) * 100}%` }}
@@ -145,8 +159,9 @@ function WuduPage() {
           transition={{ type: "spring", bounce: 0.5, duration: 0.8 }}
           style={{
             maxWidth: "600px",
+            width: "90%",
             margin: "0 auto",
-            padding: "50px",
+            padding: "50px 20px",
             backgroundColor: "rgba(0, 184, 148, 0.1)",
             borderRadius: "30px",
             border: "2px solid #00b894",
@@ -157,14 +172,14 @@ function WuduPage() {
             initial={{ y: -20 }} 
             animate={{ y: [0, -20, 0] }} 
             transition={{ repeat: Infinity, duration: 2 }}
-            style={{ fontSize: "100px", marginBottom: "20px" }}
+            style={{ fontSize: "80px", marginBottom: "20px" }}
           >
             🌟🎉
           </motion.div>
-          <h2 style={{ color: "#00b894", fontSize: "36px", marginBottom: "20px", fontWeight: "bold" }}>
+          <h2 style={{ color: "#00b894", fontSize: "32px", marginBottom: "20px", fontWeight: "bold" }}>
             ما شاء الله يا بطل!
           </h2>
-          <p style={{ color: "white", fontSize: "22px", lineHeight: "1.8", marginBottom: "40px" }}>
+          <p style={{ color: "white", fontSize: "18px", lineHeight: "1.8", marginBottom: "40px" }}>
             لقد أتممت خطوات الوضوء بنجاح. أنت الآن طاهرٌ ومستعدٌ للقاء الله عز وجل في الصلاة. تقبل الله منك! ✨
           </p>
           <motion.button 
@@ -172,8 +187,8 @@ function WuduPage() {
             whileTap={{ scale: 0.95 }}
             onClick={restartWudu}
             style={{ 
-              padding: "15px 40px", 
-              fontSize: "20px", 
+              padding: "15px 30px", 
+              fontSize: "18px", 
               fontWeight: "bold",
               backgroundColor: "#00b894", 
               color: "white", 
@@ -188,7 +203,7 @@ function WuduPage() {
         </motion.div>
       ) : (
         <>
-          <div style={{ position: "relative", minHeight: "450px", maxWidth: "700px", margin: "0 auto", overflow: "hidden" }}>
+          <div style={{ position: "relative", minHeight: "450px", maxWidth: "700px", width: "95%", margin: "0 auto", overflow: "hidden" }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
@@ -205,12 +220,13 @@ function WuduPage() {
                   backgroundColor: "rgba(30, 39, 46, 0.8)",
                   borderRadius: "24px",
                   boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                  border: "1px solid rgba(255,255,255,0.05)"
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  boxSizing: "border-box"
                 }}
               >
                 <div style={{ 
-                  width: "200px", 
-                  height: "200px", 
+                  width: "180px", 
+                  height: "180px", 
                   backgroundColor: "rgba(255, 255, 255, 0.1)", 
                   borderRadius: "50%", 
                   display: "flex", 
@@ -225,35 +241,42 @@ function WuduPage() {
                     src={wuduSteps[currentStep].img} 
                     alt={wuduSteps[currentStep].title} 
                     style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerHTML = `<span style="font-size: 80px;">💧</span>`;
+                    }}
                   />
                 </div>
                 
-                <h2 style={{ color: "white", fontSize: "32px", marginBottom: "15px", fontWeight: "bold" }}>
+                <h2 style={{ color: "white", fontSize: "24px", marginBottom: "15px", fontWeight: "bold" }}>
                   <span style={{ color: "#00b894", marginRight: "10px" }}>{currentStep + 1}.</span> 
                   {wuduSteps[currentStep].title}
                 </h2>
-                <p style={{ color: "#d2dae2", fontSize: "22px", lineHeight: "1.8", maxWidth: "85%" }}>
+                <p style={{ color: "#d2dae2", fontSize: "18px", lineHeight: "1.8", maxWidth: "95%" }}>
                   {wuduSteps[currentStep].desc}
                 </p>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "40px", paddingBottom: "50px" }}>
+          {/* 👇 إضافة flexWrap لأزرار التحكم */}
+          <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "15px", marginTop: "40px", paddingBottom: "50px" }}>
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={nextStep} 
               style={{ 
-                padding: "15px 40px", 
-                fontSize: "20px", 
+                padding: "15px 30px", 
+                fontSize: "18px", 
                 fontWeight: "bold",
                 backgroundColor: "#00b894", 
                 color: "white", 
                 border: "none", 
                 borderRadius: "50px", 
                 cursor: "pointer",
-                boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)"
+                boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)",
+                flex: "1 1 200px",
+                maxWidth: "300px"
               }}
             >
               {currentStep === wuduSteps.length - 1 ? "أتممت الوضوء ✨" : "الخطوة التالية ◀"}
@@ -265,14 +288,16 @@ function WuduPage() {
               onClick={prevStep} 
               disabled={currentStep === 0}
               style={{ 
-                padding: "15px 40px", 
-                fontSize: "20px", 
+                padding: "15px 30px", 
+                fontSize: "18px", 
                 fontWeight: "bold",
                 backgroundColor: "transparent", 
                 color: currentStep === 0 ? "#555" : "#00b894", 
                 border: `2px solid ${currentStep === 0 ? "#555" : "#00b894"}`, 
                 borderRadius: "50px", 
-                cursor: currentStep === 0 ? "not-allowed" : "pointer" 
+                cursor: currentStep === 0 ? "not-allowed" : "pointer",
+                flex: "1 1 200px",
+                maxWidth: "300px"
               }}
             >
               ▶ السابق

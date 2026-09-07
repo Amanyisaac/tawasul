@@ -6,33 +6,27 @@ import stories from './storiesData.json';
 function StoriesPage() {
   const [selectedStory, setSelectedStory] = useState<any>(null);
   
-  // حالات (States) نافذة النقاط
   const [showPointsModal, setShowPointsModal] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
 
-  // دالة التعامل مع إنهاء قراءة القصة
   const handleFinishStory = () => {
-    // 1. نقفل نافذة القصة
     setSelectedStory(null);
 
-    // 2. نجيب النقاط القديمة ونزود 10
     const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
     const newPoints = currentPoints + 10;
     
-    // 3. نحفظ النقاط الجديدة
     localStorage.setItem("childPoints", newPoints.toString());
     setTotalPoints(newPoints);
 
-    // 4. نظهر نافذة النقاط بعد تأخير بسيط عشان الأنيميشن
     setTimeout(() => {
       setShowPointsModal(true);
     }, 500);
   };
 
   return (
-    <div className="container" style={{ paddingTop: "120px", position: "relative" }}>
+    // 👇 إضافة مسافات جانبية
+    <div className="container" style={{ paddingTop: "120px", paddingRight: "20px", paddingLeft: "20px", position: "relative", minHeight: "100vh" }}>
       
-      {/* 🌟 نافذة النقاط المنبثقة (Modal) 🌟 */}
       <AnimatePresence>
         {showPointsModal && (
           <div style={{ 
@@ -49,6 +43,7 @@ function StoriesPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.5 }}
+              /* 👇 عرض 90% */
               style={{ 
                 backgroundColor: "#1e272e", 
                 padding: "40px", 
@@ -56,6 +51,7 @@ function StoriesPage() {
                 border: "2px solid #00b894", 
                 textAlign: "center", 
                 maxWidth: "400px",
+                width: "90%",
                 boxShadow: "0 20px 50px rgba(0, 184, 148, 0.3)",
                 direction: "rtl"
               }}
@@ -85,7 +81,8 @@ function StoriesPage() {
                   fontSize: "18px", 
                   cursor: "pointer", 
                   fontWeight: "bold",
-                  boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)"
+                  boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)",
+                  width: "100%"
                 }}
               >
                 استمرار 👍
@@ -113,7 +110,6 @@ function StoriesPage() {
         ))}
       </div>
 
-      {/* 📖 نافذة القصة (Modal) 📖 */}
       <AnimatePresence>
         {selectedStory && (
           <motion.div 
@@ -128,20 +124,19 @@ function StoriesPage() {
               animate={{ y: 0, scale: 1 }}
               exit={{ y: 50, scale: 0.9 }}
               className="video-modal"
-              style={{ maxWidth: "600px", padding: "30px", display: "flex", flexDirection: "column" }}
+              /* 👇 عرض 90% ليكون متناسب مع الموبايل */
+              style={{ maxWidth: "600px", width: "90%", padding: "30px 20px", display: "flex", flexDirection: "column", boxSizing: "border-box" }}
               onClick={(e) => e.stopPropagation()}
             >
               <button className="close-btn" onClick={() => setSelectedStory(null)}>✕</button>
-              <h2 style={{ color: "#00b894", marginBottom: "15px" }}>{selectedStory.title}</h2>
+              <h2 style={{ color: "#00b894", marginBottom: "15px", textAlign: "center" }}>{selectedStory.title}</h2>
               
-              {/* حاوية السكرول عشان لو القصة طويلة الزرار يفضل باين تحت */}
               <div style={{ maxHeight: "50vh", overflowY: "auto", paddingRight: "10px", marginBottom: "20px" }}>
                 <p style={{ color: "#d1d1e0", fontSize: "18px", lineHeight: "1.8", textAlign: "justify" }}>
                   {selectedStory.content}
                 </p>
               </div>
 
-              {/* 🎁 زرار إنهاء القراءة لاستلام النقاط 🎁 */}
               <div style={{ textAlign: "center", marginTop: "10px" }}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -153,7 +148,7 @@ function StoriesPage() {
                     color: "white",
                     border: "none",
                     borderRadius: "20px",
-                    fontSize: "18px",
+                    fontSize: "16px",
                     fontWeight: "bold",
                     cursor: "pointer",
                     boxShadow: "0 8px 15px rgba(9, 132, 227, 0.3)"

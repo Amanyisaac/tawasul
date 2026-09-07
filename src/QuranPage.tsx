@@ -39,18 +39,14 @@ function QuranPage() {
 
   // دالة التعامل مع إنهاء التلاوة
   const handleFinishReading = () => {
-    // 1. نقفل نافذة السورة
     setSelectedSurah(null);
 
-    // 2. نجيب النقاط القديمة ونزود 10
     const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
     const newPoints = currentPoints + 10;
     
-    // 3. نحفظ النقاط الجديدة
     localStorage.setItem("childPoints", newPoints.toString());
     setTotalPoints(newPoints);
 
-    // 4. نظهر نافذة النقاط بعد تأخير بسيط عشان الأنيميشن
     setTimeout(() => {
       setShowPointsModal(true);
     }, 500);
@@ -59,7 +55,8 @@ function QuranPage() {
   if (loading) return <div style={{ color: "white", textAlign: "center", paddingTop: "200px", fontSize: "24px" }}>جاري تحميل القرآن الكريم... ⏳</div>;
 
   return (
-    <div className="container" style={{ paddingTop: "100px", position: "relative" }}>
+    // 👇 إضافة مسافات جانبية
+    <div className="container" style={{ paddingTop: "100px", paddingRight: "20px", paddingLeft: "20px", position: "relative", minHeight: "100vh" }}>
       
       {/* 🌟 نافذة النقاط المنبثقة (Modal) 🌟 */}
       <AnimatePresence>
@@ -78,6 +75,7 @@ function QuranPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.5 }}
+              /* 👇 إضافة عرض 90% */
               style={{ 
                 backgroundColor: "#1e272e", 
                 padding: "40px", 
@@ -85,6 +83,7 @@ function QuranPage() {
                 border: "2px solid #00b894", 
                 textAlign: "center", 
                 maxWidth: "400px",
+                width: "90%",
                 boxShadow: "0 20px 50px rgba(0, 184, 148, 0.3)",
                 direction: "rtl"
               }}
@@ -114,7 +113,8 @@ function QuranPage() {
                   fontSize: "18px", 
                   cursor: "pointer", 
                   fontWeight: "bold",
-                  boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)"
+                  boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)",
+                  width: "100%"
                 }}
               >
                 استمرار 👍
@@ -149,27 +149,26 @@ function QuranPage() {
               animate={{ y: 0, scale: 1 }}
               exit={{ y: 50, scale: 0.9 }}
               className="video-modal" 
-              style={{ maxWidth: "800px", padding: "30px", direction: "rtl", textAlign: "right", display: "flex", flexDirection: "column" }} 
+              /* 👇 إضافة عرض 95% ليكون مناسباً للموبايل */
+              style={{ maxWidth: "800px", width: "95%", padding: "30px 20px", direction: "rtl", textAlign: "right", display: "flex", flexDirection: "column", boxSizing: "border-box" }} 
               onClick={(e) => e.stopPropagation()}
             >
               <button className="close-btn" onClick={() => setSelectedSurah(null)}>✕</button>
               
-              <h2 style={{ color: "#00b894", textAlign: "center", marginBottom: "20px", fontSize: "32px", borderBottom: "2px solid rgba(0, 184, 148, 0.2)", paddingBottom: "10px" }}>
+              <h2 style={{ color: "#00b894", textAlign: "center", marginBottom: "20px", fontSize: "28px", borderBottom: "2px solid rgba(0, 184, 148, 0.2)", paddingBottom: "10px" }}>
                 {selectedSurah.name}
               </h2>
               
-              {/* حاوية السكرول للنص القرآني */}
               <div style={{ maxHeight: "55vh", overflowY: "auto", paddingRight: "15px", marginBottom: "20px", paddingBottom: "10px" }}>
-                <p style={{ fontSize: "24px", lineHeight: "2.5", color: "white", textAlign: "justify" }}>
+                <p style={{ fontSize: "22px", lineHeight: "2.5", color: "white", textAlign: "justify" }}>
                   {selectedSurah.ayahs?.map((a: any) => (
                     <span key={a.numberInSurah}>
-                      {a.text} <span style={{ color: "#fdcb6e", fontSize: "18px", margin: "0 5px" }}>﴿{a.numberInSurah}﴾</span>
+                      {a.text} <span style={{ color: "#fdcb6e", fontSize: "16px", margin: "0 5px" }}>﴿{a.numberInSurah}﴾</span>
                     </span>
                   ))}
                 </p>
               </div>
 
-              {/* 🎁 زرار إنهاء القراءة لاستلام النقاط 🎁 */}
               <div style={{ textAlign: "center", marginTop: "10px" }}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -181,7 +180,7 @@ function QuranPage() {
                     color: "white",
                     border: "none",
                     borderRadius: "20px",
-                    fontSize: "18px",
+                    fontSize: "16px",
                     fontWeight: "bold",
                     cursor: "pointer",
                     boxShadow: "0 8px 15px rgba(9, 132, 227, 0.3)"

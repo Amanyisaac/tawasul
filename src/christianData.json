@@ -2,89 +2,125 @@
   "agpeya": [
     {
       "id": 1,
-      "title": "صلاة باكر",
-      "subtitle": "الساعة الأولى من النهار",
+      "titleAr": "صلاة باكر",
+      "titleEn": "Prime (Morning Prayer)",
+      "subtitleAr": "الساعة الأولى من النهار",
+      "subtitleEn": "The first hour of the day",
       "icon": "🌅",
-      "content": "هلموا نسجد، هلموا نطلب من المسيح إلهنا... \nنَشْكُرُكَ أَيُّهَا الرَّبُّ الإِلَهُ ضَابِطُ الْكُلِّ، أَبُو رَبِّنَا وَإِلَهِنَا وَمُخَلِّصِنَا يَسُوعَ الْمَسِيحِ، لأَنَّكَ سَتَرْتَنَا، وَأَعَنْتَنَا، وَحَفِظْتَنَا، وَقَبِلْتَنَا إِلَيْكَ..."
+      "contentAr": "هلموا نسجد، هلموا نطلب من المسيح إلهنا... \nنَشْكُرُكَ أَيُّهَا الرَّبُّ الإِلَهُ ضَابِطُ الْكُلِّ، أَبُو رَبِّنَا وَإِلَهِنَا وَمُخَلِّصِنَا يَسُوعَ الْمَسِيحِ، لأَنَّكَ سَتَرْتَنَا، وَأَعَنْتَنَا، وَحَفِظْتَنَا، وَقَبِلْتَنَا إِلَيْكَ...",
+      "contentEn": "O come, let us worship... We give thanks unto Thee, O God, the Pantokrator, the Father of our Lord, God and Savior Jesus Christ..."
     },
     {
       "id": 2,
-      "title": "صلاة الساعة الثالثة",
-      "subtitle": "تذكار حلول الروح القدس",
+      "titleAr": "صلاة الساعة الثالثة",
+      "titleEn": "Terce (Third Hour)",
+      "subtitleAr": "تذكار حلول الروح القدس",
+      "subtitleEn": "Commemoration of the Descent of the Holy Spirit",
       "icon": "🕊️",
-      "content": "أيها الملك السمائي المعزي، روح الحق، الحاضر في كل مكان والمالئ الكل، كنز الصالحات ومعطي الحياة، هلم تفضل وحل فينا وطهرنا من كل دنس، وخلص أيها الصالح نفوسنا."
+      "contentAr": "أيها الملك السمائي المعزي، روح الحق، الحاضر في كل مكان والمالئ الكل...",
+      "contentEn": "O Heavenly King, the Comforter, the Spirit of Truth, who art everywhere present and fillest all things..."
     },
     {
       "id": 3,
-      "title": "صلاة الساعة السادسة",
-      "subtitle": "تذكار صلب السيد المسيح",
+      "titleAr": "صلاة الساعة السادسة",
+      "titleEn": "Sext (Sixth Hour)",
+      "subtitleAr": "تذكار صلب السيد المسيح",
+      "subtitleEn": "Commemoration of the Crucifixion",
       "icon": "✝️",
-      "content": "يا من في اليوم السادس وفي وقت الساعة السادسة، سُمرت على الصليب من أجل الخطيئة التي تجرأ عليها آدم في الفردوس، مزق صك خطايانا أيها المسيح إلهنا وخلصنا."
+      "contentAr": "يا من في اليوم السادس وفي وقت الساعة السادسة، سُمرت على الصليب...",
+      "contentEn": "O Thou who on the sixth day and at the sixth hour was nailed to the Cross for the sin which Adam dared to commit..."
     },
     {
       "id": 4,
-      "title": "صلاة الساعة التاسعة",
-      "subtitle": "تذكار موت السيد المسيح بالجسد",
+      "titleAr": "صلاة الساعة التاسعة",
+      "titleEn": "None (Ninth Hour)",
+      "subtitleAr": "تذكار موت السيد المسيح بالجسد",
+      "subtitleEn": "Commemoration of the Death in the Flesh",
       "icon": "🖤",
-      "content": "يا من ذاق الموت بالجسد في وقت الساعة التاسعة من أجلنا نحن الخطاة، أمت حواسنا الجسمانية أيها المسيح إلهنا ونجنا."
+      "contentAr": "يا من ذاق الموت بالجسد في وقت الساعة التاسعة من أجلنا نحن الخطاة...",
+      "contentEn": "O Thou who tasted death in the flesh at the ninth hour for our sakes, mortify our earthly members..."
     },
     {
       "id": 5,
-      "title": "صلاة الغروب",
-      "subtitle": "الساعة الحادية عشر (الخامسة مساءً)",
+      "titleAr": "صلاة الغروب",
+      "titleEn": "Vespers (Eleventh Hour)",
+      "subtitleAr": "الساعة الحادية عشر (الخامسة مساءً)",
+      "subtitleEn": "The Eleventh Hour (Sunset)",
       "icon": "🌇",
-      "content": "نشكرك يا ملكنا المتحنن لأنك منحتنا أن نعبر هذا اليوم بسلام، وأتيت بنا إلى المساء شاكرين، وجعلتنا مستحقين أن ننظر النور إلى المساء."
+      "contentAr": "نشكرك يا ملكنا المتحنن لأنك منحتنا أن نعبر هذا اليوم بسلام...",
+      "contentEn": "We thank Thee, O our compassionate King, for that Thou hast granted us to pass this day in peace..."
     },
     {
       "id": 6,
-      "title": "صلاة النوم",
-      "subtitle": "الساعة الثانية عشر",
+      "titleAr": "صلاة النوم",
+      "titleEn": "Compline (Twelfth Hour)",
+      "subtitleAr": "الساعة الثانية عشر",
+      "subtitleEn": "The Twelfth Hour (Before Sleep)",
       "icon": "🌙",
-      "content": "يَا رَبُّ لاَ تُبَكِّتْنِي بِغَضَبِكَ، وَلاَ تُؤَدِّبْنِي بِرَجَزِكَ. ارْحَمْنِي يَا رَبُّ فَإِنِّي ضَعِيفٌ. هَبْ لِي يا رب في هذه الليلة نوماً سالماً من كل قلق."
+      "contentAr": "يَا رَبُّ لاَ تُبَكِّتْنِي بِغَضَبِكَ، وَلاَ تُؤَدِّبْنِي بِرَجَزِكَ...",
+      "contentEn": "O Lord, rebuke me not in Thine anger, neither chasten me in Thy hot displeasure..."
     },
     {
       "id": 7,
-      "title": "صلاة نصف الليل",
-      "subtitle": "تذكار المجيء الثاني",
+      "titleAr": "صلاة نصف الليل",
+      "titleEn": "Midnight Praise",
+      "subtitleAr": "تذكار المجيء الثاني",
+      "subtitleEn": "Commemoration of the Second Coming",
       "icon": "🌌",
-      "content": "هوذا العريس يأتي في نصف الليل، فطوبى للعبد الذي يجده مستيقظاً، أما الذي يجده متغافلاً فإنه غير مستحق المضي معه."
+      "contentAr": "هوذا العريس يأتي في نصف الليل، فطوبى للعبد الذي يجده مستيقظاً...",
+      "contentEn": "Behold the Bridegroom cometh at midnight: blessed is the servant whom He shall find watching..."
     }
   ],
   "rosary": [
     {
       "id": 1,
-      "title": "السر الأول من أسرار الفرح",
-      "subtitle": "بشارة الملاك للعذراء مريم",
+      "titleAr": "السر الأول من أسرار الفرح",
+      "titleEn": "First Joyful Mystery",
+      "subtitleAr": "بشارة الملاك לכذراء مريم",
+      "subtitleEn": "The Annunciation to the Virgin Mary",
       "icon": "🕊️",
-      "content": "نتأمل في بشارة الملاك جبرائيل لمريم العذراء وتجسد ابن الله في أحشائها."
+      "contentAr": "نتأمل في بشارة الملاك جبرائيل لمريم العذراء وتجسد ابن الله في أحشائها.",
+      "contentEn": "We contemplate the angel Gabriel's annunciation to the Virgin Mary and the incarnation."
     },
     {
       "id": 2,
-      "title": "السر الثاني من أسرار الفرح",
-      "subtitle": "زيارة العذراء لأليصابات",
+      "titleAr": "السر الثاني من أسرار الفرح",
+      "titleEn": "Second Joyful Mystery",
+      "subtitleAr": "زيارة العذراء لأليصابات",
+      "subtitleEn": "The Visitation of Mary to Elizabeth",
       "icon": "🤰",
-      "content": "نتأمل في زيارة العذراء مريم لنسيبتها أليصابات لخدمتها."
+      "contentAr": "نتأمل في زيارة العذراء مريم لنسيبتها أليصابات لخدمتها.",
+      "contentEn": "We contemplate the Virgin Mary's visit to her cousin Elizabeth."
     },
     {
       "id": 3,
-      "title": "السر الأول من أسرار النور",
-      "subtitle": "معمودية يسوع",
+      "titleAr": "السر الأول من أسرار النور",
+      "titleEn": "First Luminous Mystery",
+      "subtitleAr": "معمودية يسوع",
+      "subtitleEn": "The Baptism of Jesus in the Jordan",
       "icon": "💧",
-      "content": "نتأمل في عماد يسوع في نهر الأردن على يد يوحنا المعمدان."
+      "contentAr": "نتأمل في عماد يسوع في نهر الأردن على يد يوحنا المعمدان.",
+      "contentEn": "We contemplate the baptism of Jesus in the Jordan River by John the Baptist."
     },
     {
       "id": 4,
-      "title": "السر الأول من أسرار الحزن",
-      "subtitle": "صلاة يسوع في البستان",
+      "titleAr": "السر الأول من أسرار الحزن",
+      "titleEn": "First Sorrowful Mystery",
+      "subtitleAr": "صلاة يسوع في البستان",
+      "subtitleEn": "The Agony in the Garden",
       "icon": "🌿",
-      "content": "نتأمل في حزن يسوع وعرقه كقطرات الدم في بستان جثسيماني."
+      "contentAr": "نتأمل في حزن يسوع وعرقه كقطرات الدم في بستان جثسيماني.",
+      "contentEn": "We contemplate Jesus' sorrow and sweat of blood in the Garden of Gethsemane."
     },
     {
       "id": 5,
-      "title": "السر الأول من أسرار المجد",
-      "subtitle": "قيامة يسوع من الأموات",
+      "titleAr": "السر الأول من أسرار المجد",
+      "titleEn": "First Glorious Mystery",
+      "subtitleAr": "قيامة يسوع من الأموات",
+      "subtitleEn": "The Resurrection of Jesus",
       "icon": "✨",
-      "content": "نتأمل في قيامة يسوع المسيح من بين الأموات منتصراً."
+      "contentAr": "نتأمل في قيامة يسوع المسيح من بين الأموات منتصراً.",
+      "contentEn": "We contemplate the triumphant resurrection of Jesus Christ from the dead."
     }
   ]
 }

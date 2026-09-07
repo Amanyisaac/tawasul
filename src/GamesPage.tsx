@@ -16,7 +16,7 @@ function PointsModal({ isVisible, totalPoints, onContinue }: { isVisible: boolea
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
             transition={{ type: "spring", bounce: 0.5 }}
-            style={{ backgroundColor: "#1e272e", padding: "40px", borderRadius: "24px", border: "2px solid #00b894", textAlign: "center", maxWidth: "400px", boxShadow: "0 20px 50px rgba(0, 184, 148, 0.3)", direction: "rtl" }}
+            style={{ backgroundColor: "#1e272e", padding: "40px", borderRadius: "24px", border: "2px solid #00b894", textAlign: "center", maxWidth: "400px", width: "90%", boxShadow: "0 20px 50px rgba(0, 184, 148, 0.3)", direction: "rtl" }}
           >
             <motion.div animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 2 }} style={{ fontSize: "60px", marginBottom: "15px" }}>
               🏅
@@ -30,7 +30,7 @@ function PointsModal({ isVisible, totalPoints, onContinue }: { isVisible: boolea
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onContinue}
-              style={{ padding: "12px 35px", backgroundColor: "#00b894", color: "white", border: "none", borderRadius: "15px", fontSize: "18px", cursor: "pointer", fontWeight: "bold", boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)" }}
+              style={{ padding: "12px 35px", backgroundColor: "#00b894", color: "white", border: "none", borderRadius: "15px", fontSize: "18px", cursor: "pointer", fontWeight: "bold", boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)", width: "100%" }}
             >
               استمرار للمستوى التالي 👍
             </motion.button>
@@ -111,11 +111,11 @@ function WordGame({ onBack }: { onBack: () => void }) {
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
         <button onClick={onBack} style={{ padding: "10px 20px", backgroundColor: "#ff7675", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>العودة للألعاب ✕</button>
       </div>
-      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "40px", borderRadius: "24px", textAlign: "center" }}>
+      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "20px", borderRadius: "24px", textAlign: "center", width: "95%" }}>
         <h3 style={{ color: "#00b894", marginBottom: "15px" }}>المستوى {currentLevel + 1} من {gamesData.wordGame.length}</h3>
-        <div style={{ fontSize: "100px", marginBottom: "20px" }}>{levelData.image}</div>
+        <div style={{ fontSize: "80px", marginBottom: "20px" }}>{levelData.image}</div>
         
-        <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "20px", minHeight: "60px" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "20px", minHeight: "60px", flexWrap: "wrap" }}>
           {Array.from({ length: levelData.word.length }).map((_, index) => (
             <div key={index} onClick={() => selectedLetters[index] && handleUndoLetter(selectedLetters[index], index)} style={{ width: "50px", height: "50px", backgroundColor: selectedLetters[index] ? "#00b894" : "rgba(255,255,255,0.1)", border: "2px dashed #555", borderRadius: "10px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "24px", color: "white", cursor: "pointer" }}>
               {selectedLetters[index] || ""}
@@ -124,7 +124,7 @@ function WordGame({ onBack }: { onBack: () => void }) {
         </div>
 
         {showError && (
-          <p style={{ color: "#ff7675", fontSize: "18px", fontWeight: "bold", marginBottom: "15px" }}>⚠️ إجابة خاطئة، حاول مرة أخرى!</p>
+          <p style={{ color: "#ff7675", fontSize: "16px", fontWeight: "bold", marginBottom: "15px" }}>⚠️ إجابة خاطئة، حاول مرة أخرى!</p>
         )}
 
         {isSuccess ? (
@@ -193,8 +193,8 @@ function QuizGame({ onBack }: { onBack: () => void }) {
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
         <button onClick={onBack} style={{ padding: "10px 20px", backgroundColor: "#ff7675", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>العودة للألعاب ✕</button>
       </div>
-      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "40px", borderRadius: "24px" }}>
-        <h3 style={{ color: "white", marginBottom: "20px" }}>{levelData.question}</h3>
+      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "20px", borderRadius: "24px", width: "95%" }}>
+        <h3 style={{ color: "white", marginBottom: "20px", lineHeight: "1.5" }}>{levelData.question}</h3>
         {isSuccess ? (
           <div>
             <h3 style={{ color: "#00b894", marginBottom: "15px" }}>إجابة صحيحة يا بطل! 🌟</h3>
@@ -204,7 +204,7 @@ function QuizGame({ onBack }: { onBack: () => void }) {
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {wrongAnswer && <p style={{ color: "#ff7675", fontWeight: "bold" }}>⚠️ إجابة خاطئة، حاول اختيار الإجابة الصحيحة!</p>}
             {levelData.options.map((option, index) => (
-              <button key={index} onClick={() => handleAnswer(option)} style={{ padding: "15px", fontSize: "18px", backgroundColor: wrongAnswer === option ? "#ff7675" : "#34495e", color: "white", border: "none", borderRadius: "10px", cursor: "pointer" }}>{option}</button>
+              <button key={index} onClick={() => handleAnswer(option)} style={{ padding: "15px", fontSize: "16px", backgroundColor: wrongAnswer === option ? "#ff7675" : "#34495e", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", width: "100%" }}>{option}</button>
             ))}
           </div>
         )}
@@ -285,9 +285,6 @@ function MemoryGame({ onBack }: { onBack: () => void }) {
     setCurrentLevel(prev => (prev < gamesData.memoryGame.length - 1 ? prev + 1 : 0));
   };
 
-  const totalCards = levelData ? levelData.emojis.length * 2 : 6;
-  const columns = totalCards <= 6 ? 3 : 4;
-
   return (
     <div style={{ paddingBottom: "50px", direction: "rtl", textAlign: "center", position: "relative" }}>
       <PointsModal isVisible={showPointsModal} totalPoints={totalPoints} onContinue={handleContinue} />
@@ -295,7 +292,7 @@ function MemoryGame({ onBack }: { onBack: () => void }) {
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
         <button onClick={onBack} style={{ padding: "10px 20px", backgroundColor: "#ff7675", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>العودة للألعاب ✕</button>
       </div>
-      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "40px", borderRadius: "24px" }}>
+      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "20px", borderRadius: "24px", width: "95%" }}>
         <h3 style={{ color: "#0984e3", marginBottom: "20px" }}>المستوى {currentLevel + 1} من {gamesData.memoryGame.length}</h3>
         {isWin ? (
           <div>
@@ -303,7 +300,7 @@ function MemoryGame({ onBack }: { onBack: () => void }) {
             <button onClick={handleWinPoints} style={{ padding: "12px 30px", backgroundColor: "#0984e3", color: "white", border: "none", borderRadius: "20px", cursor: "pointer", fontWeight: "bold", fontSize: "16px" }}>استلام الجائزة 🎁</button>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: "10px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fit, minmax(60px, 1fr))`, gap: "10px" }}>
             {cards.map((card, index) => (
               <div key={card.id} onClick={() => handleCardClick(index)} style={{ height: "80px", backgroundColor: card.isFlipped || card.isMatched ? "white" : "#0984e3", borderRadius: "10px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "35px", cursor: "pointer" }}>
                 {card.isFlipped || card.isMatched ? card.emoji : "❓"}
@@ -360,9 +357,9 @@ function MathGame({ onBack }: { onBack: () => void }) {
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
         <button onClick={onBack} style={{ padding: "10px 20px", backgroundColor: "#ff7675", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>العودة للألعاب ✕</button>
       </div>
-      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "40px", borderRadius: "24px" }}>
-        <div style={{ fontSize: "50px", color: "white", fontWeight: "bold", marginBottom: "20px" }}>
-          {levelData.num1} {levelData.operator} {levelData.num2} = ؟
+      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "20px", borderRadius: "24px", width: "95%" }}>
+        <div style={{ fontSize: "40px", color: "white", fontWeight: "bold", marginBottom: "20px", direction: "ltr" }}>
+          {levelData.num1} {levelData.operator} {levelData.num2} = ?
         </div>
         {wrongOption !== null && <p style={{ color: "#ff7675", fontWeight: "bold", marginBottom: "15px" }}>⚠️ إجابة خاطئة، جرب رقماً آخر!</p>}
         {isSuccess ? (
@@ -371,10 +368,87 @@ function MathGame({ onBack }: { onBack: () => void }) {
             <button onClick={handleWin} style={{ padding: "12px 30px", backgroundColor: "#0984e3", color: "white", border: "none", borderRadius: "20px", cursor: "pointer", fontWeight: "bold", fontSize: "16px" }}>استلام الجائزة 🎁</button>
           </div>
         ) : (
-          <div style={{ display: "flex", justifyContent: "center", gap: "15px" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
             {levelData.options.map((option, index) => (
-              <button key={index} onClick={() => handleAnswer(option)} style={{ width: "70px", height: "70px", fontSize: "24px", fontWeight: "bold", backgroundColor: wrongOption === option ? "#ff7675" : "#fdcb6e", color: wrongOption === option ? "white" : "#2d3436", border: "none", borderRadius: "15px", cursor: "pointer" }}>{option}</button>
+              <button key={index} onClick={() => handleAnswer(option)} style={{ width: "60px", height: "60px", fontSize: "20px", fontWeight: "bold", backgroundColor: wrongOption === option ? "#ff7675" : "#fdcb6e", color: wrongOption === option ? "white" : "#2d3436", border: "none", borderRadius: "15px", cursor: "pointer" }}>{option}</button>
             ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
+// 5. لعبة البحث عن الكنز والتصوير 📸 (100 مستوى حركي)
+// ==========================================
+function ScavengerHuntGame({ onBack }: { onBack: () => void }) {
+  const challenges = gamesData.scavengerHunt || [];
+
+  const [currentStep, setCurrentStep] = useState(0);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [showPointsModal, setShowPointsModal] = useState(false);
+  const [totalPoints, setTotalPoints] = useState(0);
+
+  const currentChallenge = challenges[currentStep] || challenges[0];
+
+  const handleImageCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCapturedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleWinPoints = () => {
+    const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
+    const newPoints = currentPoints + 10;
+    localStorage.setItem("childPoints", newPoints.toString());
+    setTotalPoints(newPoints);
+    setShowPointsModal(true);
+  };
+
+  const handleContinue = () => {
+    setShowPointsModal(false);
+    setCapturedImage(null);
+    setCurrentStep(prev => (prev < challenges.length - 1 ? prev + 1 : 0));
+  };
+
+  return (
+    <div style={{ paddingBottom: "50px", direction: "rtl", textAlign: "center", position: "relative" }}>
+      <PointsModal isVisible={showPointsModal} totalPoints={totalPoints} onContinue={handleContinue} />
+
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
+        <button onClick={onBack} style={{ padding: "10px 20px", backgroundColor: "#ff7675", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>العودة للألعاب ✕</button>
+      </div>
+      
+      <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.9)", padding: "30px", borderRadius: "24px", width: "95%", border: "2px solid #fdcb6e" }}>
+        <h3 style={{ color: "#fdcb6e", marginBottom: "10px", fontSize: "22px" }}>المهمة {currentStep + 1} من {challenges.length} 🏃‍♂️</h3>
+        <p style={{ color: "white", fontSize: "20px", fontWeight: "bold", margin: "20px 0" }}>{currentChallenge.title}</p>
+        <p style={{ color: "#a0a0b5", fontSize: "14px", marginBottom: "25px" }}>💡 تلميح: {currentChallenge.hint}</p>
+
+        {capturedImage ? (
+          <div>
+            <div style={{ width: "100%", maxHeight: "250px", overflow: "hidden", borderRadius: "15px", marginBottom: "20px", border: "2px solid #00b894" }}>
+              <img src={capturedImage} alt="Captured Treasure" style={{ width: "100%", height: "auto", objectFit: "contain" }} />
+            </div>
+            <h4 style={{ color: "#00b894", marginBottom: "15px" }}>رائع جداً يا بطل! التقطت الصورة بنجاح 📸🌟</h4>
+            <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+              <button onClick={handleWinPoints} style={{ padding: "12px 25px", backgroundColor: "#00b894", color: "white", border: "none", borderRadius: "15px", cursor: "pointer", fontWeight: "bold", fontSize: "16px" }}>استلام الجائزة 🎁</button>
+              <button onClick={() => setCapturedImage(null)} style={{ padding: "12px 25px", backgroundColor: "#ff7675", color: "white", border: "none", borderRadius: "15px", cursor: "pointer", fontWeight: "bold", fontSize: "16px" }}>إعادة التصوير 🔄</button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ border: "3px dashed #0984e3", padding: "30px", borderRadius: "20px", backgroundColor: "rgba(9, 132, 227, 0.1)" }}>
+            <div style={{ fontSize: "50px", marginBottom: "15px" }}>📷</div>
+            <p style={{ color: "white", marginBottom: "20px", fontSize: "16px" }}>قوم بالتحرك في الغرفة، ابحث عن المطلوب، وصوره بالكاميرا!</p>
+            <label style={{ display: "inline-block", padding: "14px 30px", backgroundColor: "#0984e3", color: "white", borderRadius: "15px", cursor: "pointer", fontWeight: "bold", fontSize: "18px", boxShadow: "0 5px 15px rgba(9, 132, 227, 0.4)" }}>
+              افتح الكاميرا وِصوّر 📸
+              <input type="file" accept="image/*" capture="environment" onChange={handleImageCapture} style={{ display: "none" }} />
+            </label>
           </div>
         )}
       </div>
@@ -393,32 +467,32 @@ export default function GamesPage() {
     { id: 'quiz', title: "تحدي المعلومات", icon: "💡", desc: "أجب عن الأسئلة الممتعة.", color: "#e67e22", isReady: true },
     { id: 'memory', title: "لعبة الذاكرة", icon: "🎴", desc: "طابق الصور المتشابهة.", color: "#0984e3", isReady: true },
     { id: 'math', title: "لعبة الحساب", icon: "🔢", desc: "حل المسائل الرياضية.", color: "#fdcb6e", isReady: true },
+    { id: 'hunt', title: "صوّر واكسب", icon: "📸", desc: "تحدي الحركة والبحث في الغرفة.", color: "#e84393", isReady: true },
   ];
 
   return (
     <div className="container" style={{ paddingTop: "100px", direction: "rtl", textAlign: "center", minHeight: "100vh" }}>
       {!activeGame && (
         <>
-          <h1 style={{ fontSize: "40px", marginBottom: "10px", color: "white" }}>عالم الألعاب 🎮</h1>
-          <p style={{ color: "#a0a0b5", fontSize: "18px", marginBottom: "40px" }}>اختر لعبتك المفضلة وابدأ المرح!</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "25px", maxWidth: "900px", margin: "0 auto", padding: "0 20px 50px" }}>
+          <h1 style={{ fontSize: "32px", marginBottom: "10px", color: "white" }}>عالم الألعاب 🎮</h1>
+          <p style={{ color: "#a0a0b5", fontSize: "16px", marginBottom: "40px" }}>اختر لعبتك المفضلة وابدأ المرح!</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "20px", maxWidth: "900px", margin: "0 auto", padding: "0 20px 50px", width: "100%" }}>
             {gamesList.map((game) => (
-              <div key={game.id} onClick={() => setActiveGame(game.id)} style={{ backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "30px 20px", borderRadius: "24px", cursor: "pointer", border: `2px solid ${game.color}`, boxShadow: "0 10px 30px rgba(0,0,0,0.2)" }}>
-                <div style={{ fontSize: "60px", marginBottom: "15px" }}>{game.icon}</div>
-                <h3 style={{ color: "white", fontSize: "24px", marginBottom: "10px" }}>{game.title}</h3>
-                <p style={{ color: "#a0a0b5", fontSize: "16px" }}>{game.desc}</p>
+              <div key={game.id} onClick={() => setActiveGame(game.id)} style={{ backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "20px", borderRadius: "24px", cursor: "pointer", border: `2px solid ${game.color}`, boxShadow: "0 10px 30px rgba(0,0,0,0.2)" }}>
+                <div style={{ fontSize: "50px", marginBottom: "15px" }}>{game.icon}</div>
+                <h3 style={{ color: "white", fontSize: "20px", marginBottom: "10px" }}>{game.title}</h3>
+                <p style={{ color: "#a0a0b5", fontSize: "14px" }}>{game.desc}</p>
               </div>
             ))}
           </div>
         </>
       )}
 
-      <>
-        {activeGame === 'word' && <WordGame onBack={() => setActiveGame(null)} />}
-        {activeGame === 'quiz' && <QuizGame onBack={() => setActiveGame(null)} />}
-        {activeGame === 'memory' && <MemoryGame onBack={() => setActiveGame(null)} />}
-        {activeGame === 'math' && <MathGame onBack={() => setActiveGame(null)} />}
-      </>
+      {activeGame === 'word' && <WordGame onBack={() => setActiveGame(null)} />}
+      {activeGame === 'quiz' && <QuizGame onBack={() => setActiveGame(null)} />}
+      {activeGame === 'memory' && <MemoryGame onBack={() => setActiveGame(null)} />}
+      {activeGame === 'math' && <MathGame onBack={() => setActiveGame(null)} />}
+      {activeGame === 'hunt' && <ScavengerHuntGame onBack={() => setActiveGame(null)} />}
     </div>
   );
 }

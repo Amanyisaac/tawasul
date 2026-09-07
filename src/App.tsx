@@ -7,7 +7,7 @@ function App() {
 
   const cardData = [
     { icon: "📖", title: "My Quran", path: "/quran" },
-    { icon: "🕊️", title: "Christian", path: "/christian" }, // 👈 تمت إضافة هذا الكارت هنا
+    { icon: "🕊️", title: "Christian", path: "/christian" },
     { icon: "🎮", title: "Games", path: "/games" },
     { icon: "📅", title: "Calendar", path: "/calendar" },
     { icon: "📚", title: "Stories", path: "/stories" },
@@ -17,14 +17,8 @@ function App() {
   ];
 
   return (
-    <div className="container">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="hero-wrapper"
-      >
-        <img src="src\assets\hero.png" alt="Hero" className="hero-image" />
-      </motion.div>
+    /* 👇 التعديل هنا: ضفنا مسافة 140 بيكسل من فوق وتوسيط للمحتوى */
+    <div className="container" style={{ paddingTop: "140px", textAlign: "center", minHeight: "100vh", paddingBottom: "50px" }}>
       
       <motion.h1 
         initial={{ y: 20, opacity: 0 }}
@@ -39,6 +33,7 @@ function App() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1 }}
         className="subtitle"
+        style={{ marginBottom: "40px" }}
       >
         Let's start our journey!
       </motion.p>

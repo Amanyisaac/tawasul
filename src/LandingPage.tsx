@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import Navbar from "./Navbar"; // استيراد الـ Navbar الجديد
+import Navbar from "./Navbar"; 
 import "./App.css";
 
 function LandingPage() {
@@ -21,18 +21,15 @@ function LandingPage() {
 
   return (
     <div className="landing-page-wrapper">
-      {/* وضع الـ Navbar هنا */}
       <Navbar />
       
-      {/* القسم الأول: أضفنا id="home" */}
-      <section id="home" className="hero-section">
+      <section id="home" className="hero-section" style={{ minHeight: "80vh", display: "flex", alignItems: "center", paddingBottom: "40px" }}>
         <div className="landing-container">
           <motion.h1 
             initial={{ y: -30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
             className="title"
-            style={{ fontSize: '55px' }}
           >
             Welcome to Tawasul
           </motion.h1>
@@ -75,29 +72,37 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* القسم الثاني: أضفنا id="vision" */}
-      <section id="vision" className="story-section">
+      {/* 👇 قسم Our Vision بتصميم كارد فخم ومنفصل بمسافة أمان واضحة */}
+      <section id="vision" style={{ maxWidth: "1000px", margin: "60px auto", padding: "0 20px" }}>
         <motion.div 
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="story-card"
+          style={{
+            backgroundColor: "rgba(30, 39, 46, 0.85)",
+            border: "1px solid rgba(0, 184, 148, 0.3)",
+            borderRadius: "20px",
+            padding: "40px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+            textAlign: "left"
+          }}
         >
-          <h2 className="section-title">Our Vision</h2>
-          <p className="story-text">
+          <h2 style={{ color: "#00b894", fontSize: "28px", marginBottom: "20px", fontWeight: "bold" }}>Our Vision</h2>
+          <p style={{ color: "#d2dae2", fontSize: "16px", lineHeight: "1.8", margin: 0 }}>
             Tawasul was born from a simple yet powerful idea: creating a seamless digital ecosystem where children, parents, and specialists connect. We provide a safe environment filled with interactive games and activities, while offering parents a smart dashboard to track progress. Through our dedicated specialist portal, we ensure every child receives the professional guidance they need to thrive.
           </p>
         </motion.div>
       </section>
 
-      {/* القسم الثالث: أضفنا id="features" */}
-      <section id="features" className="features-section">
+      {/* 👇 قسم المميزات مع مسافة علوية مريحة جداً */}
+      <section id="features" className="features-section" style={{ marginTop: "60px", paddingBottom: "80px" }}>
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="section-title"
+          style={{ marginBottom: "40px", textAlign: "center" }}
         >
           Key Features
         </motion.h2>
@@ -109,7 +114,7 @@ function LandingPage() {
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.2 }}
+              transition={{ delay: index * 0.1 }}
               className="feature-card"
             >
               <div className="feature-icon">{feature.icon}</div>

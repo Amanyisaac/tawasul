@@ -170,12 +170,12 @@ export default function ChristianPage() {
         )}
       </AnimatePresence>
 
-      {/* الهيدر */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px", maxWidth: "1200px", margin: "0 auto 40px", padding: "0 20px" }}>
-        <h1 className="title" style={{ margin: 0, fontSize: "34px" }}>
+      {/* 👇 الهيدر مع إضافة flexWrap وتعديل توسيط المحتوى */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px", maxWidth: "1200px", margin: "0 auto 40px", padding: "0 20px", flexWrap: "wrap", gap: "15px" }}>
+        <h1 className="title" style={{ margin: 0, fontSize: "34px", textAlign: "center", flex: "1 1 300px" }}>
           {activeSection === "bible" ? "الكتاب المقدس 📖" : activeSection === "agpeya" ? "الأجبية 🕊️" : activeSection === "rosary" ? "المسبحة الوردية 📿" : "صلواتي وآياتي ⛪"}
         </h1>
-        <button onClick={handleBack} style={{ padding: "10px 20px", backgroundColor: "#34495e", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>
+        <button onClick={handleBack} style={{ padding: "10px 20px", backgroundColor: "#34495e", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold", margin: "0 auto" }}>
           {selectedBibleBook ? "العودة للأسفار 🔙" : activeSection ? "العودة للأقسام 🔙" : "العودة للرئيسية 🏠"}
         </button>
       </div>
@@ -233,7 +233,6 @@ export default function ChristianPage() {
             <div>
               <h2 style={{ color: "#fdcb6e", textAlign: "center", marginBottom: "25px", fontSize: "26px" }}>{arabicBookNames[selectedBibleBook.name] || selectedBibleBook.name}</h2>
               
-              {/* 👈 تم جعل الأصحاحات تظهر جنب بعضها باستخدام Flexbox */}
               <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "15px" }}>
                 {Array.from({ length: selectedBibleBook.chapters }).map((_, index) => (
                   <motion.button

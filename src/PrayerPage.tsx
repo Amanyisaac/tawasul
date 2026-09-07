@@ -2,23 +2,32 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
 
-// بيانات خطوات الصلاة بالترتيب مع مسارات الصور 
+// 🌟 استيراد الصور بشكل صحيح عشان تترفع مع المشروع 🌟
+import sallah1 from "./assets/sallah1.png";
+import sallah2 from "./assets/sallah2.png";
+import sallah3 from "./assets/sallah3.png";
+import sallah4 from "./assets/sallah4.png";
+import sallah5 from "./assets/sallah5.png";
+import sallah6 from "./assets/sallah6.png";
+import sallah7 from "./assets/sallah7.png";
+import sallah8 from "./assets/sallah8.png";
+
+// بيانات خطوات الصلاة بالترتيب مع استخدام المتغيرات
 const prayerSteps = [
-  { id: 1, title: "تكبيرة الإحرام", desc: "الوقوف واستقبال القبلة، ثم رفع اليدين بمحاذاة الأذنين وقول: (الله أكبر).",   img: "src/assets/sallah1.png" },
-  { id: 2, title: "القيام وقراءة الفاتحة", desc: "وضع اليد اليمنى فوق اليسرى على الصدر، وقراءة سورة الفاتحة وما تيسر من القرآن.",  img: "src/assets/sallah2.png" },
-  { id: 3, title: "الركوع", desc: "الانحناء بحيث يستوي الظهر، ووضع اليدين على الركبتين، وقول: (سبحان ربي العظيم) ثلاث مرات.",   img: "src/assets/sallah3.png" },
-  { id: 4, title: "الرفع من الركوع", desc: "الاعتدال واقفاً باطمئنان وقول: (سمع الله لمن حمده، ربنا ولك الحمد).",  img: "src/assets/sallah4.png" },
-  { id: 5, title: "السجود", desc: "النزول للأرض والسجود على الأعضاء السبعة، وقول: (سبحان ربي الأعلى) ثلاث مرات.",img: "src/assets/sallah5.png" },
-  { id: 6, title: "الجلوس بين السجدتين", desc: "الرفع من السجود والجلوس باطمئنان، وقول: (رب اغفر لي، وارحمني).",  img: "src/assets/sallah6.png" },
-  { id: 7, title: "التشهد", desc: "الجلوس بعد السجدة الثانية لقراءة التشهد، مع الإشارة بالسبابة عند ذكر الله.",   img:   "src/assets/sallah7.png" },
-  { id: 8, title: "التسليم", desc: "الالتفات يميناً وقول (السلام عليكم ورحمة الله)، ثم يساراً وقول مثلها لإنهاء الصلاة." ,img: "src/assets/sallah8.png" },
+  { id: 1, title: "تكبيرة الإحرام", desc: "الوقوف واستقبال القبلة، ثم رفع اليدين بمحاذاة الأذنين وقول: (الله أكبر).",   img: sallah1 },
+  { id: 2, title: "القيام وقراءة الفاتحة", desc: "وضع اليد اليمنى فوق اليسرى على الصدر، وقراءة سورة الفاتحة وما تيسر من القرآن.",  img: sallah2 },
+  { id: 3, title: "الركوع", desc: "الانحناء بحيث يستوي الظهر، ووضع اليدين على الركبتين، وقول: (سبحان ربي العظيم) ثلاث مرات.",   img: sallah3 },
+  { id: 4, title: "الرفع من الركوع", desc: "الاعتدال واقفاً باطمئنان وقول: (سمع الله لمن حمده، ربنا ولك الحمد).",  img: sallah4 },
+  { id: 5, title: "السجود", desc: "النزول للأرض والسجود على الأعضاء السبعة، وقول: (سبحان ربي الأعلى) ثلاث مرات.",img: sallah5 },
+  { id: 6, title: "الجلوس بين السجدتين", desc: "الرفع من السجود والجلوس باطمئنان، وقول: (رب اغفر لي، وارحمني).",  img: sallah6 },
+  { id: 7, title: "التشهد", desc: "الجلوس بعد السجدة الثانية لقراءة التشهد، مع الإشارة بالسبابة عند ذكر الله.",   img:   sallah7 },
+  { id: 8, title: "التسليم", desc: "الالتفات يميناً وقول (السلام عليكم ورحمة الله)، ثم يساراً وقول مثلها لإنهاء الصلاة." ,img: sallah8 },
 ];
 
 function PrayerPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   
-  // حالات (States) نافذة النقاط
   const [showPointsModal, setShowPointsModal] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
 
@@ -26,16 +35,12 @@ function PrayerPage() {
     if (currentStep < prayerSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // إظهار شاشة النجاح عند إنهاء الخطوات
       setIsCompleted(true);
-
-      // حساب وإضافة النقاط
       const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
       const newPoints = currentPoints + 10;
       localStorage.setItem("childPoints", newPoints.toString());
       setTotalPoints(newPoints);
 
-      // إظهار نافذة الجائزة بعد تأخير بسيط للأنيميشن
       setTimeout(() => {
         setShowPointsModal(true);
       }, 500);
@@ -55,7 +60,6 @@ function PrayerPage() {
   return (
     <div className="container" style={{ paddingTop: "100px", direction: "rtl", textAlign: "center", minHeight: "100vh", position: "relative" }}>
       
-      {/* 🌟 نافذة النقاط المنبثقة (Modal) 🌟 */}
       <AnimatePresence>
         {showPointsModal && (
           <div style={{ 
@@ -72,6 +76,7 @@ function PrayerPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.5 }}
+              /* 👇 إضافة عرض 90% للمودال */
               style={{ 
                 backgroundColor: "#1e272e", 
                 padding: "40px", 
@@ -79,6 +84,7 @@ function PrayerPage() {
                 border: "2px solid #00b894", 
                 textAlign: "center", 
                 maxWidth: "400px",
+                width: "90%",
                 boxShadow: "0 20px 50px rgba(0, 184, 148, 0.3)"
               }}
             >
@@ -107,7 +113,8 @@ function PrayerPage() {
                   fontSize: "18px", 
                   cursor: "pointer", 
                   fontWeight: "bold",
-                  boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)"
+                  boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)",
+                  width: "100%"
                 }}
               >
                 استمرار 👍
@@ -126,13 +133,12 @@ function PrayerPage() {
         تعلم الصلاة 🕌
       </motion.h1>
 
-      <p style={{ color: "#a0a0b5", fontSize: "18px", marginBottom: "40px" }}>
+      <p style={{ color: "#a0a0b5", fontSize: "18px", marginBottom: "40px", padding: "0 15px" }}>
         خطوة بخطوة لنتعلم كيف نصلي بخشوع
       </p>
 
-      {/* شريط التقدم */}
       {!isCompleted && (
-        <div style={{ maxWidth: "700px", margin: "0 auto 40px", backgroundColor: "rgba(255,255,255,0.05)", borderRadius: "20px", height: "8px", overflow: "hidden" }}>
+        <div style={{ maxWidth: "700px", width: "90%", margin: "0 auto 40px", backgroundColor: "rgba(255,255,255,0.05)", borderRadius: "20px", height: "8px", overflow: "hidden" }}>
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${((currentStep + 1) / prayerSteps.length) * 100}%` }}
@@ -142,7 +148,6 @@ function PrayerPage() {
         </div>
       )}
 
-      {/* شاشة النهاية (رسالة الإنجاز) */}
       {isCompleted ? (
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -150,8 +155,9 @@ function PrayerPage() {
           transition={{ type: "spring", bounce: 0.5, duration: 0.8 }}
           style={{
             maxWidth: "600px",
+            width: "90%",
             margin: "0 auto",
-            padding: "50px",
+            padding: "50px 20px",
             backgroundColor: "rgba(0, 184, 148, 0.1)",
             borderRadius: "30px",
             border: "2px solid #00b894",
@@ -162,14 +168,14 @@ function PrayerPage() {
             initial={{ y: -20 }} 
             animate={{ y: [0, -20, 0] }} 
             transition={{ repeat: Infinity, duration: 2 }}
-            style={{ fontSize: "100px", marginBottom: "20px" }}
+            style={{ fontSize: "80px", marginBottom: "20px" }}
           >
             🕋✨
           </motion.div>
-          <h2 style={{ color: "#00b894", fontSize: "36px", marginBottom: "20px", fontWeight: "bold" }}>
+          <h2 style={{ color: "#00b894", fontSize: "32px", marginBottom: "20px", fontWeight: "bold" }}>
             تقبل الله صلاتك!
           </h2>
-          <p style={{ color: "white", fontSize: "22px", lineHeight: "1.8", marginBottom: "40px" }}>
+          <p style={{ color: "white", fontSize: "18px", lineHeight: "1.8", marginBottom: "40px" }}>
             لقد أتممت خطوات الصلاة بنجاح. تذكر دائماً أن الصلاة هي نور حياتنا وصلتنا الدائمة بالله عز وجل. بارك الله فيك!
           </p>
           <motion.button 
@@ -177,8 +183,8 @@ function PrayerPage() {
             whileTap={{ scale: 0.95 }}
             onClick={restartPrayer}
             style={{ 
-              padding: "15px 40px", 
-              fontSize: "20px", 
+              padding: "15px 30px", 
+              fontSize: "18px", 
               fontWeight: "bold",
               backgroundColor: "#00b894", 
               color: "white", 
@@ -192,9 +198,8 @@ function PrayerPage() {
           </motion.button>
         </motion.div>
       ) : (
-        /* كارت عرض الخطوات */
         <>
-          <div style={{ position: "relative", minHeight: "450px", maxWidth: "700px", margin: "0 auto", overflow: "hidden" }}>
+          <div style={{ position: "relative", minHeight: "450px", maxWidth: "700px", width: "95%", margin: "0 auto", overflow: "hidden" }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
@@ -211,13 +216,13 @@ function PrayerPage() {
                   backgroundColor: "rgba(30, 39, 46, 0.8)",
                   borderRadius: "24px",
                   boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                  border: "1px solid rgba(255,255,255,0.05)"
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  boxSizing: "border-box"
                 }}
               >
-                {/* مكان صورة خطوة الصلاة */}
                 <div style={{ 
-                  width: "200px", 
-                  height: "200px", 
+                  width: "180px", 
+                  height: "180px", 
                   backgroundColor: "rgba(255, 255, 255, 0.1)", 
                   borderRadius: "50%", 
                   display: "flex", 
@@ -233,40 +238,41 @@ function PrayerPage() {
                     alt={prayerSteps[currentStep].title} 
                     style={{ width: "100%", height: "100%", objectFit: "cover" }} 
                     onError={(e) => {
-                      // لو الصورة لسه متعملتش يظهر الإيموجي ده بدل ما يعمل خطأ
                       e.currentTarget.style.display = 'none';
                       e.currentTarget.parentElement!.innerHTML = `<span style="font-size: 80px;">🕌</span>`;
                     }}
                   />
                 </div>
                 
-                <h2 style={{ color: "white", fontSize: "32px", marginBottom: "15px", fontWeight: "bold" }}>
+                <h2 style={{ color: "white", fontSize: "24px", marginBottom: "15px", fontWeight: "bold" }}>
                   <span style={{ color: "#00b894", marginRight: "10px" }}>{currentStep + 1}.</span> 
                   {prayerSteps[currentStep].title}
                 </h2>
-                <p style={{ color: "#d2dae2", fontSize: "22px", lineHeight: "1.8", maxWidth: "85%" }}>
+                <p style={{ color: "#d2dae2", fontSize: "18px", lineHeight: "1.8", maxWidth: "95%" }}>
                   {prayerSteps[currentStep].desc}
                 </p>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* أزرار التحكم */}
-          <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "40px", paddingBottom: "50px" }}>
+          {/* 👇 إضافة flexWrap لأزرار التحكم */}
+          <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "15px", marginTop: "40px", paddingBottom: "50px" }}>
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={nextStep} 
               style={{ 
-                padding: "15px 40px", 
-                fontSize: "20px", 
+                padding: "15px 30px", 
+                fontSize: "18px", 
                 fontWeight: "bold",
                 backgroundColor: "#00b894", 
                 color: "white", 
                 border: "none", 
                 borderRadius: "50px", 
                 cursor: "pointer",
-                boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)"
+                boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)",
+                flex: "1 1 200px",
+                maxWidth: "300px"
               }}
             >
               {currentStep === prayerSteps.length - 1 ? "أتممت الصلاة ✨" : "الخطوة التالية ◀"}
@@ -278,14 +284,16 @@ function PrayerPage() {
               onClick={prevStep} 
               disabled={currentStep === 0}
               style={{ 
-                padding: "15px 40px", 
-                fontSize: "20px", 
+                padding: "15px 30px", 
+                fontSize: "18px", 
                 fontWeight: "bold",
                 backgroundColor: "transparent", 
                 color: currentStep === 0 ? "#555" : "#00b894", 
                 border: `2px solid ${currentStep === 0 ? "#555" : "#00b894"}`, 
                 borderRadius: "50px", 
-                cursor: currentStep === 0 ? "not-allowed" : "pointer" 
+                cursor: currentStep === 0 ? "not-allowed" : "pointer",
+                flex: "1 1 200px",
+                maxWidth: "300px"
               }}
             >
               ▶ السابق

@@ -137,6 +137,7 @@ export default function Navbar() {
   };
 
   const isMobile = windowWidth < 950;
+  const isAdminUser = localStorage.getItem("userEmail") === "adora9073@gmail.com";
 
   return (
     <>
@@ -198,9 +199,12 @@ export default function Navbar() {
             <Link to="/leaderboard" style={{ color: "#fdcb6e", textDecoration: "none", fontWeight: "bold", fontSize: "14px", whiteSpace: "nowrap" }}>
               🏆 {lang === "ar" ? "لوحة الشرف" : "Leaderboard"}
             </Link>
-            <Link to="/admin-dashboard" style={{ color: "#ff7675", textDecoration: "none", fontWeight: "bold", fontSize: "14px", whiteSpace: "nowrap" }}>
-              ⚙️ {lang === "ar" ? "الإدارة" : "Admin"}
-            </Link>
+            {/* يظهر فقط للمستخدم صاحب إيميل الأدمن المصرح به */}
+            {isAdminUser && (
+              <Link to="/admin-dashboard" style={{ color: "#ff7675", textDecoration: "none", fontWeight: "bold", fontSize: "14px", whiteSpace: "nowrap" }}>
+                ⚙️ {lang === "ar" ? "الإدارة" : "Admin"}
+              </Link>
+            )}
           </div>
         )}
 
@@ -313,7 +317,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* 🌟 العنصر السحري: حاجز بارتفاع 65px يحجز مكان الناف بار عشان أول الصفحة ميبدأش مستخبي تحته أبداً 🌟 */}
+      {/* حاجز بارتفاع 65px يحجز مكان الناف بار */}
       <div style={{ height: "65px", width: "100%", flexShrink: 0 }} />
 
       {/* قائمة الموبايل المنسدلة */}
@@ -354,9 +358,12 @@ export default function Navbar() {
             <Link to="/leaderboard" style={{ color: "#fdcb6e", textDecoration: "none", fontWeight: "bold", fontSize: "14px" }}>
               🏆 {lang === "ar" ? "لوحة الشرف" : "Leaderboard"}
             </Link>
-            <Link to="/admin-dashboard" style={{ color: "#ff7675", textDecoration: "none", fontWeight: "bold", fontSize: "14px" }}>
-              ⚙️ {lang === "ar" ? "لوحة الإدارة" : "Admin"}
-            </Link>
+            {/* يظهر في الموبايل فقط لنفس الإيميل */}
+            {isAdminUser && (
+              <Link to="/admin-dashboard" style={{ color: "#ff7675", textDecoration: "none", fontWeight: "bold", fontSize: "14px" }}>
+                ⚙️ {lang === "ar" ? "لوحة الإدارة" : "Admin"}
+              </Link>
+            )}
             <Link to="/community" style={{ color: "#00b894", textDecoration: "none", fontWeight: "bold", fontSize: "14px" }}>
               💬 {lang === "ar" ? "المجتمع" : "Community"}
             </Link>

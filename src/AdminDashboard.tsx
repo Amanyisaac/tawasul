@@ -51,8 +51,19 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
+    // 🔒 فحص الأمان: السماح فقط لإيميل الأدمن المصرح به
+    const adminEmail = "adora9073@gmail.com";
+    const currentEmail = localStorage.getItem("userEmail");
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+    if (!isLoggedIn || currentEmail !== adminEmail) {
+      alert("عذراً، هذه الصفحة مخصصة لإدارة المنصة فقط ⛔");
+      navigate("/");
+      return;
+    }
+
     fetchData();
-  }, []);
+  }, [navigate]);
 
   // تحديث حالة الطبيب (قبول / رفض) مباشرة في Supabase
   const handleUpdateDoctorStatus = async (userId: any, status: "approved" | "rejected") => {

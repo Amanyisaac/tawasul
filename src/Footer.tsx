@@ -1,4 +1,4 @@
- import "./App.css";
+import "./App.css";
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -42,7 +42,7 @@ function Footer() {
       >
         <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "40px", paddingBottom: "40px", borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}>
           
-          {/* العمود الأول: Explore */}
+          {/* العمود الأول: Explore - تم توجيه كل رابط لصفحته المحددة */}
           <div style={{ flex: "1 1 150px" }}>
             <h3 style={{ color: "white", marginBottom: "20px", fontSize: "16px", fontWeight: "bold", position: "relative", paddingBottom: "8px" }}>
               Explore
@@ -50,9 +50,9 @@ function Footer() {
             </h3>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
               <FooterLink to="/dashboard" text="Kids Dashboard" />
-              <FooterLink to="/dashboard" text="Educational Games" />
-              <FooterLink to="/dashboard" text="Inspiring Stories" />
-              <FooterLink to="/dashboard" text="Quran & Azkar" />
+              <FooterLink to="/games" text="Educational Games" />
+              <FooterLink to="/stories" text="Inspiring Stories" />
+              <FooterLink to="/azkar" text="Quran & Azkar" />
             </ul>
           </div>
 

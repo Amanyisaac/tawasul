@@ -1,32 +1,95 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "./supabaseClient";
 import "./App.css";
-import stories from './storiesData.json';
+import stories from "./storiesData.json";
 
 function StoriesPage() {
+  const navigate = useNavigate();
   const [selectedStory, setSelectedStory] = useState<any>(null);
-  
   const [showPointsModal, setShowPointsModal] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
+  const [isSavingPoints, setIsSavingPoints] = useState(false);
 
-  const handleFinishStory = () => {
+  const handleFinishStory = async () => {
+    if (isSavingPoints) return;
+    setIsSavingPoints(true);
     setSelectedStory(null);
 
-    const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
-    const newPoints = currentPoints + 10;
-    
-    localStorage.setItem("childPoints", newPoints.toString());
-    setTotalPoints(newPoints);
+    const userEmail = localStorage.getItem("userEmail");
+    const userName = localStorage.getItem("userName");
+    const localPoints = parseInt(localStorage.getItem("childPoints") || "0");
+    let currentDbPoints = localPoints;
 
-    setTimeout(() => {
-      setShowPointsModal(true);
-    }, 500);
+    try {
+      if (userEmail) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("points")
+          .eq("email", userEmail)
+          .single();
+
+        if (profile && typeof profile.points === "number") {
+          currentDbPoints = profile.points;
+        }
+      }
+
+      const updatedPoints = currentDbPoints + 10;
+
+      if (userEmail) {
+        await supabase
+          .from("profiles")
+          .update({ points: updatedPoints })
+          .eq("email", userEmail);
+      }
+
+      if (userName) {
+        await supabase
+          .from("heroes")
+          .update({ points: updatedPoints })
+          .eq("name", userName);
+      }
+
+      localStorage.setItem("childPoints", updatedPoints.toString());
+      setTotalPoints(updatedPoints);
+      setTimeout(() => {
+        setShowPointsModal(true);
+      }, 400);
+    } catch (err) {
+      console.error("Error updating story points:", err);
+      const fallbackPoints = localPoints + 10;
+      localStorage.setItem("childPoints", fallbackPoints.toString());
+      setTotalPoints(fallbackPoints);
+      setTimeout(() => {
+        setShowPointsModal(true);
+      }, 400);
+    } finally {
+      setIsSavingPoints(false);
+    }
   };
 
   return (
-    // 👇 إضافة مسافات جانبية
-    <div className="container" style={{ paddingTop: "120px", paddingRight: "20px", paddingLeft: "20px", position: "relative", minHeight: "100vh" }}>
-      
+    <div className="container" style={{ paddingTop: "120px", paddingRight: "20px", paddingLeft: "20px", position: "relative", minHeight: "100vh", paddingBottom: "60px" }}>
+      {/* زر العودة */}
+      <div style={{ maxWidth: "1000px", margin: "0 auto 15px", display: "flex", justifyContent: "flex-start" }}>
+        <button
+          onClick={() => navigate("/dashboard")}
+          style={{
+            padding: "8px 20px",
+            backgroundColor: "#ff7675",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "14px",
+          }}
+        >
+          ✕ Back to Dashboard
+        </button>
+      </div>
+
       <AnimatePresence>
         {showPointsModal && (
           <div style={{ 
@@ -43,7 +106,6 @@ function StoriesPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.5 }}
-              /* 👇 عرض 90% */
               style={{ 
                 backgroundColor: "#1e272e", 
                 padding: "40px", 
@@ -65,7 +127,7 @@ function StoriesPage() {
               </motion.div>
               <h2 style={{ color: "white", marginBottom: "15px", fontSize: "28px" }}>عاش يا بطل! 🦸‍♂️</h2>
               <p style={{ color: "#a0a0b5", fontSize: "18px", lineHeight: "1.6", marginBottom: "30px" }}>
-                كسبت <span style={{ color: "#fdcb6e", fontWeight: "bold" }}>10 نقاط</span> جديدة لقراءتك القصة.. <br/>
+                كسبت <span style={{ color: "#fdcb6e", fontWeight: "bold" }}>10 نقاط</span> جديدة مسجلة سحابياً لقراءتك القصة.. <br/>
                 مجموع نقاطك أصبح: <span style={{ color: "#00b894", fontSize: "24px", fontWeight: "bold" }}>{totalPoints}</span>
               </p>
               <motion.button
@@ -92,7 +154,7 @@ function StoriesPage() {
         )}
       </AnimatePresence>
 
-      <motion.h1 className="title">Inspiring Stories 📚</motion.h1>
+      <motion.h1 className="title" style={{ textAlign: "center", color: "white" }}>Inspiring Stories 📚</motion.h1>
 
       <div className="dashboard-grid" style={{ marginTop: "40px" }}>
         {stories.map((story, index) => (
@@ -124,7 +186,6 @@ function StoriesPage() {
               animate={{ y: 0, scale: 1 }}
               exit={{ y: 50, scale: 0.9 }}
               className="video-modal"
-              /* 👇 عرض 90% ليكون متناسب مع الموبايل */
               style={{ maxWidth: "600px", width: "90%", padding: "30px 20px", display: "flex", flexDirection: "column", boxSizing: "border-box" }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -141,23 +202,23 @@ function StoriesPage() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  disabled={isSavingPoints}
                   onClick={handleFinishStory}
                   style={{
                     padding: "12px 30px",
-                    backgroundColor: "#0984e3",
+                    backgroundColor: isSavingPoints ? "#636e72" : "#0984e3",
                     color: "white",
                     border: "none",
                     borderRadius: "20px",
                     fontSize: "16px",
                     fontWeight: "bold",
-                    cursor: "pointer",
+                    cursor: isSavingPoints ? "wait" : "pointer",
                     boxShadow: "0 8px 15px rgba(9, 132, 227, 0.3)"
                   }}
                 >
-                  أتممت القراءة واستلام الجائزة 🎁
+                  {isSavingPoints ? "Saving points..." : "أتممت القراءة واستلام الجائزة 🎁"}
                 </motion.button>
               </div>
-
             </motion.div>
           </motion.div>
         )}

@@ -8,6 +8,19 @@ function LandingPage() {
   const navigate = useNavigate();
   const [showVideo, setShowVideo] = useState(false);
 
+  const handleGetStarted = () => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    const role = localStorage.getItem("userRole");
+
+    if (isLoggedIn === "true") {
+      if (role === "doctor") navigate("/doctor-dashboard");
+      else if (role === "parent") navigate("/parent-dashboard");
+      else navigate("/dashboard");
+    } else {
+      navigate("/login");
+    }
+  };
+
   const features = [
     { icon: "🎮", title: "Interactive Games", desc: "A rich collection of at least six interactive games and activities designed for fun learning." },
     { icon: "🕌", title: "Prayer & Wudu", desc: "Step-by-step interactive guides to teach children the correct ways of Wudu (Ablution) and daily Prayers." },
@@ -55,7 +68,7 @@ function LandingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="login-button" 
-              onClick={() => navigate("/login")} 
+              onClick={handleGetStarted} 
             >
               Get Started
             </motion.button>
@@ -72,7 +85,7 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* 👇 قسم Our Vision بتصميم كارد فخم ومنفصل بمسافة أمان واضحة */}
+      {/* قسم Our Vision */}
       <section id="vision" style={{ maxWidth: "1000px", margin: "60px auto", padding: "0 20px" }}>
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -95,7 +108,7 @@ function LandingPage() {
         </motion.div>
       </section>
 
-      {/* 👇 قسم المميزات مع مسافة علوية مريحة جداً */}
+      {/* قسم المميزات */}
       <section id="features" className="features-section" style={{ marginTop: "60px", paddingBottom: "80px" }}>
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}

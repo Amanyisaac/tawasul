@@ -1,7 +1,57 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import gamesData from './gamesData.json';
+import gamesData from "./gamesData.json";
+import { supabase } from "./supabaseClient";
+import EmotionGame from "./EmotionGame"; // 🌟 تم إضافة استيراد اللعبة هنا
 import "./App.css";
+
+// ==========================================
+// 🌟 دالة مساعدة عامة لتسجيل النقاط في Supabase 🌟
+// ==========================================
+async function recordGamePoints(pointsToAdd: number = 10): Promise<number> {
+  const userEmail = localStorage.getItem("userEmail");
+  const userName = localStorage.getItem("userName");
+  const localPoints = parseInt(localStorage.getItem("childPoints") || "0");
+  let currentDbPoints = localPoints;
+
+  try {
+    if (userEmail) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("points")
+        .eq("email", userEmail)
+        .single();
+
+      if (profile && typeof profile.points === "number") {
+        currentDbPoints = profile.points;
+      }
+    }
+
+    const updatedPoints = currentDbPoints + pointsToAdd;
+
+    if (userEmail) {
+      await supabase
+        .from("profiles")
+        .update({ points: updatedPoints })
+        .eq("email", userEmail);
+    }
+
+    if (userName) {
+      await supabase
+        .from("heroes")
+        .update({ points: updatedPoints })
+        .eq("name", userName);
+    }
+
+    localStorage.setItem("childPoints", updatedPoints.toString());
+    return updatedPoints;
+  } catch (err) {
+    console.error("Error saving game points:", err);
+    const fallback = localPoints + pointsToAdd;
+    localStorage.setItem("childPoints", fallback.toString());
+    return fallback;
+  }
+}
 
 // ==========================================
 // 🌟 مكون نافذة النقاط المشترك لجميع الألعاب 🌟
@@ -23,7 +73,7 @@ function PointsModal({ isVisible, totalPoints, onContinue }: { isVisible: boolea
             </motion.div>
             <h2 style={{ color: "white", marginBottom: "15px", fontSize: "28px" }}>عاش يا بطل! 🦸‍♂️</h2>
             <p style={{ color: "#a0a0b5", fontSize: "18px", lineHeight: "1.6", marginBottom: "30px" }}>
-              كسبت <span style={{ color: "#fdcb6e", fontWeight: "bold" }}>10 نقاط</span> جديدة..<br />
+              كسبت <span style={{ color: "#fdcb6e", fontWeight: "bold" }}>10 نقاط</span> جديدة مسجلة سحابياً..<br />
               مجموع نقاطك أصبح: <span style={{ color: "#00b894", fontSize: "24px", fontWeight: "bold" }}>{totalPoints}</span>
             </p>
             <motion.button
@@ -89,11 +139,9 @@ function WordGame({ onBack }: { onBack: () => void }) {
     setShowError(false);
   };
 
-  const handleWin = () => {
-    const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
-    const newPoints = currentPoints + 10;
-    localStorage.setItem("childPoints", newPoints.toString());
-    setTotalPoints(newPoints);
+  const handleWin = async () => {
+    const updated = await recordGamePoints(10);
+    setTotalPoints(updated);
     setShowPointsModal(true);
   };
 
@@ -102,7 +150,13 @@ function WordGame({ onBack }: { onBack: () => void }) {
     setCurrentLevel(prev => (prev < gamesData.wordGame.length - 1 ? prev + 1 : 0));
   };
 
-  const retry = () => { setAvailableLetters(levelData.scrambled); setSelectedLetters([]); setShowError(false); };
+  const retry = () => { 
+    if (levelData) {
+      setAvailableLetters(levelData.scrambled); 
+      setSelectedLetters([]); 
+      setShowError(false); 
+    }
+  };
 
   return (
     <div style={{ paddingBottom: "50px", direction: "rtl", position: "relative" }}>
@@ -113,10 +167,10 @@ function WordGame({ onBack }: { onBack: () => void }) {
       </div>
       <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "20px", borderRadius: "24px", textAlign: "center", width: "95%" }}>
         <h3 style={{ color: "#00b894", marginBottom: "15px" }}>المستوى {currentLevel + 1} من {gamesData.wordGame.length}</h3>
-        <div style={{ fontSize: "80px", marginBottom: "20px" }}>{levelData.image}</div>
+        <div style={{ fontSize: "80px", marginBottom: "20px" }}>{levelData?.image}</div>
         
         <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "20px", minHeight: "60px", flexWrap: "wrap" }}>
-          {Array.from({ length: levelData.word.length }).map((_, index) => (
+          {Array.from({ length: levelData?.word.length || 0 }).map((_, index) => (
             <div key={index} onClick={() => selectedLetters[index] && handleUndoLetter(selectedLetters[index], index)} style={{ width: "50px", height: "50px", backgroundColor: selectedLetters[index] ? "#00b894" : "rgba(255,255,255,0.1)", border: "2px dashed #555", borderRadius: "10px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "24px", color: "white", cursor: "pointer" }}>
               {selectedLetters[index] || ""}
             </div>
@@ -171,11 +225,9 @@ function QuizGame({ onBack }: { onBack: () => void }) {
     }
   };
 
-  const handleWin = () => {
-    const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
-    const newPoints = currentPoints + 10;
-    localStorage.setItem("childPoints", newPoints.toString());
-    setTotalPoints(newPoints);
+  const handleWin = async () => {
+    const updated = await recordGamePoints(10);
+    setTotalPoints(updated);
     setShowPointsModal(true);
   };
 
@@ -194,7 +246,7 @@ function QuizGame({ onBack }: { onBack: () => void }) {
         <button onClick={onBack} style={{ padding: "10px 20px", backgroundColor: "#ff7675", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>العودة للألعاب ✕</button>
       </div>
       <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "20px", borderRadius: "24px", width: "95%" }}>
-        <h3 style={{ color: "white", marginBottom: "20px", lineHeight: "1.5" }}>{levelData.question}</h3>
+        <h3 style={{ color: "white", marginBottom: "20px", lineHeight: "1.5" }}>{levelData?.question}</h3>
         {isSuccess ? (
           <div>
             <h3 style={{ color: "#00b894", marginBottom: "15px" }}>إجابة صحيحة يا بطل! 🌟</h3>
@@ -203,7 +255,7 @@ function QuizGame({ onBack }: { onBack: () => void }) {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {wrongAnswer && <p style={{ color: "#ff7675", fontWeight: "bold" }}>⚠️ إجابة خاطئة، حاول اختيار الإجابة الصحيحة!</p>}
-            {levelData.options.map((option, index) => (
+            {levelData?.options.map((option, index) => (
               <button key={index} onClick={() => handleAnswer(option)} style={{ padding: "15px", fontSize: "16px", backgroundColor: wrongAnswer === option ? "#ff7675" : "#34495e", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", width: "100%" }}>{option}</button>
             ))}
           </div>
@@ -272,11 +324,9 @@ function MemoryGame({ onBack }: { onBack: () => void }) {
     }
   };
 
-  const handleWinPoints = () => {
-    const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
-    const newPoints = currentPoints + 10;
-    localStorage.setItem("childPoints", newPoints.toString());
-    setTotalPoints(newPoints);
+  const handleWinPoints = async () => {
+    const updated = await recordGamePoints(10);
+    setTotalPoints(updated);
     setShowPointsModal(true);
   };
 
@@ -335,11 +385,9 @@ function MathGame({ onBack }: { onBack: () => void }) {
     }
   };
 
-  const handleWin = () => {
-    const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
-    const newPoints = currentPoints + 10;
-    localStorage.setItem("childPoints", newPoints.toString());
-    setTotalPoints(newPoints);
+  const handleWin = async () => {
+    const updated = await recordGamePoints(10);
+    setTotalPoints(updated);
     setShowPointsModal(true);
   };
 
@@ -359,7 +407,7 @@ function MathGame({ onBack }: { onBack: () => void }) {
       </div>
       <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.8)", padding: "20px", borderRadius: "24px", width: "95%" }}>
         <div style={{ fontSize: "40px", color: "white", fontWeight: "bold", marginBottom: "20px", direction: "ltr" }}>
-          {levelData.num1} {levelData.operator} {levelData.num2} = ?
+          {levelData?.num1} {levelData?.operator} {levelData?.num2} = ?
         </div>
         {wrongOption !== null && <p style={{ color: "#ff7675", fontWeight: "bold", marginBottom: "15px" }}>⚠️ إجابة خاطئة، جرب رقماً آخر!</p>}
         {isSuccess ? (
@@ -369,7 +417,7 @@ function MathGame({ onBack }: { onBack: () => void }) {
           </div>
         ) : (
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
-            {levelData.options.map((option, index) => (
+            {levelData?.options.map((option, index) => (
               <button key={index} onClick={() => handleAnswer(option)} style={{ width: "60px", height: "60px", fontSize: "20px", fontWeight: "bold", backgroundColor: wrongOption === option ? "#ff7675" : "#fdcb6e", color: wrongOption === option ? "white" : "#2d3436", border: "none", borderRadius: "15px", cursor: "pointer" }}>{option}</button>
             ))}
           </div>
@@ -380,7 +428,7 @@ function MathGame({ onBack }: { onBack: () => void }) {
 }
 
 // ==========================================
-// 5. لعبة البحث عن الكنز والتصوير 📸 (100 مستوى حركي)
+// 5. لعبة البحث عن الكنز والتصوير 📸
 // ==========================================
 function ScavengerHuntGame({ onBack }: { onBack: () => void }) {
   const challenges = gamesData.scavengerHunt || [];
@@ -403,11 +451,9 @@ function ScavengerHuntGame({ onBack }: { onBack: () => void }) {
     }
   };
 
-  const handleWinPoints = () => {
-    const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
-    const newPoints = currentPoints + 10;
-    localStorage.setItem("childPoints", newPoints.toString());
-    setTotalPoints(newPoints);
+  const handleWinPoints = async () => {
+    const updated = await recordGamePoints(10);
+    setTotalPoints(updated);
     setShowPointsModal(true);
   };
 
@@ -427,8 +473,8 @@ function ScavengerHuntGame({ onBack }: { onBack: () => void }) {
       
       <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.9)", padding: "30px", borderRadius: "24px", width: "95%", border: "2px solid #fdcb6e" }}>
         <h3 style={{ color: "#fdcb6e", marginBottom: "10px", fontSize: "22px" }}>المهمة {currentStep + 1} من {challenges.length} 🏃‍♂️</h3>
-        <p style={{ color: "white", fontSize: "20px", fontWeight: "bold", margin: "20px 0" }}>{currentChallenge.title}</p>
-        <p style={{ color: "#a0a0b5", fontSize: "14px", marginBottom: "25px" }}>💡 تلميح: {currentChallenge.hint}</p>
+        <p style={{ color: "white", fontSize: "20px", fontWeight: "bold", margin: "20px 0" }}>{currentChallenge?.title}</p>
+        <p style={{ color: "#a0a0b5", fontSize: "14px", marginBottom: "25px" }}>💡 تلميح: {currentChallenge?.hint}</p>
 
         {capturedImage ? (
           <div>
@@ -463,11 +509,13 @@ export default function GamesPage() {
   const [activeGame, setActiveGame] = useState<string | null>(null);
 
   const gamesList = [
-    { id: 'word', title: "لعبة الكلمات", icon: "🧩", desc: "رتب الحروف لتكوين الكلمة.", color: "#00b894", isReady: true },
-    { id: 'quiz', title: "تحدي المعلومات", icon: "💡", desc: "أجب عن الأسئلة الممتعة.", color: "#e67e22", isReady: true },
-    { id: 'memory', title: "لعبة الذاكرة", icon: "🎴", desc: "طابق الصور المتشابهة.", color: "#0984e3", isReady: true },
-    { id: 'math', title: "لعبة الحساب", icon: "🔢", desc: "حل المسائل الرياضية.", color: "#fdcb6e", isReady: true },
-    { id: 'hunt', title: "صوّر واكسب", icon: "📸", desc: "تحدي الحركة والبحث في الغرفة.", color: "#e84393", isReady: true },
+    { id: "word", title: "لعبة الكلمات", icon: "🧩", desc: "رتب الحروف لتكوين الكلمة.", color: "#00b894", isReady: true },
+    { id: "quiz", title: "تحدي المعلومات", icon: "💡", desc: "أجب عن الأسئلة الممتعة.", color: "#e67e22", isReady: true },
+    { id: "memory", title: "لعبة الذاكرة", icon: "🎴", desc: "طابق الصور المتشابهة.", color: "#0984e3", isReady: true },
+    { id: "math", title: "لعبة الحساب", icon: "🔢", desc: "حل المسائل الرياضية.", color: "#fdcb6e", isReady: true },
+    { id: "hunt", title: "صوّر واكسب", icon: "📸", desc: "تحدي الحركة والبحث في الغرفة.", color: "#e84393", isReady: true },
+    // 🌟 تمت إضافة لعبة ركن المشاعر هنا
+    { id: "emotion", title: "ركن المشاعر", icon: "🎨", desc: "عبر عن شعورك اليوم واكسب نقاطاً!", color: "#9b59b6", isReady: true },
   ];
 
   return (
@@ -488,11 +536,13 @@ export default function GamesPage() {
         </>
       )}
 
-      {activeGame === 'word' && <WordGame onBack={() => setActiveGame(null)} />}
-      {activeGame === 'quiz' && <QuizGame onBack={() => setActiveGame(null)} />}
-      {activeGame === 'memory' && <MemoryGame onBack={() => setActiveGame(null)} />}
-      {activeGame === 'math' && <MathGame onBack={() => setActiveGame(null)} />}
-      {activeGame === 'hunt' && <ScavengerHuntGame onBack={() => setActiveGame(null)} />}
+      {/* 🌟 استدعاء الألعاب وعرضها */}
+      {activeGame === "word" && <WordGame onBack={() => setActiveGame(null)} />}
+      {activeGame === "quiz" && <QuizGame onBack={() => setActiveGame(null)} />}
+      {activeGame === "memory" && <MemoryGame onBack={() => setActiveGame(null)} />}
+      {activeGame === "math" && <MathGame onBack={() => setActiveGame(null)} />}
+      {activeGame === "hunt" && <ScavengerHuntGame onBack={() => setActiveGame(null)} />}
+      {activeGame === "emotion" && <EmotionGame onBack={() => setActiveGame(null)} />}
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "./supabaseClient";
 import "./App.css";
 
-// 🌟 استيراد الصور بشكل صحيح عشان تترفع مع المشروع 🌟
+// استيراد الصور الخاصة بالوضوء
 import wudu1 from "./assets/wudu1.png";
 import wudu2 from "./assets/wudu2.png";
 import wudu3 from "./assets/wudu3.png";
@@ -14,40 +16,87 @@ import wudu8 from "./assets/wudu8.png";
 import wudu9 from "./assets/wudu9.png";
 import wudu10 from "./assets/wudu10.png";
 
-// بيانات خطوات الوضوء بالترتيب مع استخدام المتغيرات
 const wuduSteps = [
   { id: 1, title: "النية والبسملة", desc: "أن تنوي الوضوء بقلبك، ثم تقول: بسم الله.", img: wudu1 },
   { id: 2, title: "غسل الكفين", desc: "غسل الكفين إلى الرسغين ثلاث مرات.", img: wudu2 },
-  { id: 3, title: "المضمضة", desc: "إدخال الماء في الفم والمضمضة ثلاث مرات.",   img: wudu3 },
-  { id: 4, title: "الاستنشاق والاستنثار", desc: "جذب الماء بالأنف وإخراجه ثلاث مرات.",  img: wudu4 },
+  { id: 3, title: "المضمضة", desc: "إدخال الماء في الفم والمضمضة ثلاث مرات.", img: wudu3 },
+  { id: 4, title: "الاستنشاق والاستنثار", desc: "جذب الماء بالأنف وإخراجه ثلاث مرات.", img: wudu4 },
   { id: 5, title: "غسل الوجه", desc: "غسل الوجه بالكامل من منبت الشعر إلى الذقن ثلاث مرات.", img: wudu5 },
   { id: 6, title: "غسل اليدين للمرفقين", desc: "غسل اليد اليمنى ثم اليسرى إلى المرفقين ثلاث مرات.", img: wudu6 },
   { id: 7, title: "مسح الرأس", desc: "مسح الرأس بالماء مرة واحدة من الأمام للخلف ثم العودة.", img: wudu7 },
-  { id: 8, title: "مسح الأذنين", desc: "مسح الأذنين من الداخل والخارج بالماء مرة واحدة.",   img: wudu8 },
+  { id: 8, title: "مسح الأذنين", desc: "مسح الأذنين من الداخل والخارج بالماء مرة واحدة.", img: wudu8 },
   { id: 9, title: "غسل الرجلين", desc: "غسل الرجل اليمنى ثم اليسرى مع الكعبين ثلاث مرات.", img: wudu9 },
-  { id: 10, title: "دعاء ما بعد الوضوء", desc: "أشهد أن لا إله إلا الله، وأشهد أن محمداً عبده ورسوله. اللهم اجعلني من التوابين واجعلني من المتطهرين.", img: wudu10 }
+  { id: 10, title: "دعاء ما بعد الوضوء", desc: "أشهد أن لا إله إلا الله، وأشهد أن محمداً عبده ورسوله. اللهم اجعلني من التوابين واجعلني من المتطهرين.", img: wudu10 },
 ];
 
 function WuduPage() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [showPointsModal, setShowPointsModal] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
+  const [isSavingPoints, setIsSavingPoints] = useState(false);
+
+  // 🌟 تسجيل النقاط سحابياً في Supabase عند إتمام الوضوء
+  const completeWuduAndSavePoints = async () => {
+    setIsCompleted(true);
+    setIsSavingPoints(true);
+
+    const userEmail = localStorage.getItem("userEmail");
+    const userName = localStorage.getItem("userName");
+    const localPoints = parseInt(localStorage.getItem("childPoints") || "0");
+    let currentDbPoints = localPoints;
+
+    try {
+      if (userEmail) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("points")
+          .eq("email", userEmail)
+          .single();
+
+        if (profile && typeof profile.points === "number") {
+          currentDbPoints = profile.points;
+        }
+      }
+
+      const updatedPoints = currentDbPoints + 10;
+
+      // تحديث Profiles
+      if (userEmail) {
+        await supabase
+          .from("profiles")
+          .update({ points: updatedPoints })
+          .eq("email", userEmail);
+      }
+
+      // تحديث Heroes للوحة الشرف
+      if (userName) {
+        await supabase
+          .from("heroes")
+          .update({ points: updatedPoints })
+          .eq("name", userName);
+      }
+
+      localStorage.setItem("childPoints", updatedPoints.toString());
+      setTotalPoints(updatedPoints);
+      setTimeout(() => setShowPointsModal(true), 400);
+    } catch (err) {
+      console.error("Error updating wudu points:", err);
+      const fallbackPoints = localPoints + 10;
+      localStorage.setItem("childPoints", fallbackPoints.toString());
+      setTotalPoints(fallbackPoints);
+      setTimeout(() => setShowPointsModal(true), 400);
+    } finally {
+      setIsSavingPoints(false);
+    }
+  };
 
   const nextStep = () => {
     if (currentStep < wuduSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      setIsCompleted(true);
-      
-      const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
-      const newPoints = currentPoints + 10;
-      localStorage.setItem("childPoints", newPoints.toString());
-      setTotalPoints(newPoints);
-      
-      setTimeout(() => {
-        setShowPointsModal(true);
-      }, 500);
+      completeWuduAndSavePoints();
     }
   };
 
@@ -62,8 +111,27 @@ function WuduPage() {
   };
 
   return (
-    <div className="container" style={{ paddingTop: "100px", direction: "rtl", textAlign: "center", minHeight: "100vh", position: "relative" }}>
+    <div className="container" style={{ paddingTop: "100px", direction: "rtl", textAlign: "center", minHeight: "100vh", position: "relative", paddingBottom: "60px" }}>
       
+      {/* زر العودة للرئيسية */}
+      <div style={{ maxWidth: "700px", margin: "0 auto 15px", display: "flex", justifyContent: "flex-start", padding: "0 15px" }}>
+        <button
+          onClick={() => navigate("/dashboard")}
+          style={{
+            padding: "8px 20px",
+            backgroundColor: "#ff7675",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "14px",
+          }}
+        >
+          ✕ العودة للرئيسية
+        </button>
+      </div>
+
       <AnimatePresence>
         {showPointsModal && (
           <div style={{ 
@@ -80,7 +148,6 @@ function WuduPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.5 }}
-              /* 👇 إضافة عرض 90% للمودال */
               style={{ 
                 backgroundColor: "#1e272e", 
                 padding: "40px", 
@@ -101,7 +168,7 @@ function WuduPage() {
               </motion.div>
               <h2 style={{ color: "white", marginBottom: "15px", fontSize: "28px" }}>عاش يا بطل! 🦸‍♂️</h2>
               <p style={{ color: "#a0a0b5", fontSize: "18px", lineHeight: "1.6", marginBottom: "30px" }}>
-                كسبت <span style={{ color: "#fdcb6e", fontWeight: "bold" }}>10 نقاط</span> جديدة لتعلمك الوضوء.. <br/>
+                كسبت <span style={{ color: "#fdcb6e", fontWeight: "bold" }}>10 نقاط</span> جديدة ومسجلة سحابياً لتعلمك الوضوء.. <br/>
                 مجموع نقاطك أصبح: <span style={{ color: "#00b894", fontSize: "24px", fontWeight: "bold" }}>{totalPoints}</span>
               </p>
               <motion.button
@@ -132,13 +199,13 @@ function WuduPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="title"
-        style={{ fontSize: "40px", marginBottom: "10px" }}
+        style={{ fontSize: "40px", marginBottom: "10px", color: "white" }}
       >
         تعلم الوضوء 💧
       </motion.h1>
 
       <p style={{ color: "#a0a0b5", fontSize: "18px", marginBottom: "40px", padding: "0 15px" }}>
-        خطوة بخطوة لنتعلم كيف نتوضأ بشكل صحيح
+        خطوة بخطوة لنتعلم كيف نتوضأ بشكل صحيح ونكسب النقاط
       </p>
 
       {!isCompleted && (
@@ -259,27 +326,27 @@ function WuduPage() {
             </AnimatePresence>
           </div>
 
-          {/* 👇 إضافة flexWrap لأزرار التحكم */}
           <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "15px", marginTop: "40px", paddingBottom: "50px" }}>
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              disabled={isSavingPoints}
               onClick={nextStep} 
               style={{ 
                 padding: "15px 30px", 
                 fontSize: "18px", 
                 fontWeight: "bold",
-                backgroundColor: "#00b894", 
+                backgroundColor: isSavingPoints ? "#636e72" : "#00b894", 
                 color: "white", 
                 border: "none", 
                 borderRadius: "50px", 
-                cursor: "pointer",
+                cursor: isSavingPoints ? "wait" : "pointer",
                 boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)",
                 flex: "1 1 200px",
                 maxWidth: "300px"
               }}
             >
-              {currentStep === wuduSteps.length - 1 ? "أتممت الوضوء ✨" : "الخطوة التالية ◀"}
+              {currentStep === wuduSteps.length - 1 ? (isSavingPoints ? "جاري الحفظ..." : "أتممت الوضوء ✨") : "الخطوة التالية ◀"}
             </motion.button>
 
             <motion.button 

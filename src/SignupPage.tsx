@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "./supabaseClient";
 import "./App.css";
 
 export default function SignupPage() {
@@ -9,78 +10,126 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  // 👇 حالة جديدة خاصة بكود ربط ولي الأمر للطفل
   const [parentCodeInput, setParentCodeInput] = useState("");
-  
   const [idCardFile, setIdCardFile] = useState<File | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [targetRoute, setTargetRoute] = useState("/dashboard");
+  const [loading, setLoading] = useState(false);
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const existingUsers = JSON.parse(localStorage.getItem("tawasul_all_users") || "[]");
+    setLoading(true);
 
-    // 👇 1. لو بيسجل كطفل، لازم نتأكد إن كود الأم صحيح وموجود
-    if (role === "child") {
-      const linkedParent = existingUsers.find((u: any) => u.role === "parent" && u.parentCode === parentCodeInput);
-      if (!linkedParent) {
-        alert("❌ كود ولي الأمر غير صحيح! يجب أن تقوم والدتك/والدك بإنشاء حساب أولاً لإعطائك الكود.");
-        return; // نوقف التسجيل لو الكود غلط
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
+    const cleanPassword = password.trim();
+
+    try {
+      // 1. فحص ما إذا كان البريد مسجلاً مسبقاً
+      const { data: existingUser } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("email", cleanEmail)
+        .maybeSingle();
+
+      if (existingUser) {
+        alert("❌ هذا البريد الإلكتروني مسجل بالفعل! يرجى تسجيل الدخول أو استخدام بريد آخر.");
+        setLoading(false);
+        return;
       }
-    }
 
-    const saveUserDataAndRedirect = (idCardBase64: string | null = null) => {
-      // 👇 2. لو بيسجل كولي أمر، نولد له كود عائلة جديد
-      const generatedParentCode = role === "parent" ? `PRNT-${Math.floor(1000 + Math.random() * 9000)}` : undefined;
+      // 2. التحقق من كود ولي الأمر إذا كان الحساب لطفل
+      if (role === "child") {
+        const { data: parentData, error: parentError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("role", "parent")
+          .eq("parent_code", parentCodeInput.trim())
+          .maybeSingle();
 
+        if (parentError || !parentData) {
+          alert("❌ كود ولي الأمر غير صحيح أو غير مسجل! اطلب من والدك/والدتك إنشاء حساب أولاً لمشاركتك الكود.");
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 3. تحويل صورة الكارنيه إلى Base64 لو طبيب
+      let idCardBase64: string | null = null;
+      if (role === "doctor" && idCardFile) {
+        idCardBase64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(idCardFile);
+        });
+      }
+
+      // 4. توليد كود عائلة إذا كان المسجل ولي أمر
+      const generatedParentCode = role === "parent" ? `PRNT-${Math.floor(1000 + Math.random() * 9000)}` : null;
+      const initialPoints = role === "child" ? 100 : 0;
+
+      // 5. حفظ الحساب الجديد في جدول profiles
+      const { error: insertError } = await supabase
+        .from("profiles")
+        .insert([
+          {
+            name: cleanName,
+            email: cleanEmail,
+            password: cleanPassword,
+            role: role,
+            parent_code: generatedParentCode,
+            linked_to_parent_code: role === "child" ? parentCodeInput.trim() : null,
+            id_card: idCardBase64,
+            doctor_status: role === "doctor" ? "pending" : null,
+            points: initialPoints,
+          },
+        ]);
+
+      if (insertError) {
+        throw new Error(insertError.message);
+      }
+
+      // 6. لو طفل، إدراجه في جدول heroes للوحة الشرف
+      if (role === "child") {
+        await supabase.from("heroes").insert([
+          {
+            name: cleanName,
+            points: initialPoints,
+            role: "child",
+          },
+        ]);
+      }
+
+      // 7. مزامنة بيانات الجلسة الحالية
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userRole", role);
-      localStorage.setItem("userName", name);
-      
-      // حفظ كود الأم في اللوكال ستوريدج عشان يظهرلها في الداشبورد بتاعتها
-      if (role === "parent") {
-        localStorage.setItem("myParentCode", generatedParentCode as string);
+      localStorage.setItem("userName", cleanName);
+      localStorage.setItem("userEmail", cleanEmail);
+      if (role === "child") {
+        localStorage.setItem("childPoints", String(initialPoints));
+      }
+      if (generatedParentCode) {
+        localStorage.setItem("myParentCode", generatedParentCode);
       }
 
-      const newUser = {
-        name: name,
-        email: email,
-        role: role,
-        date: new Date().toLocaleDateString(),
-        idCard: idCardBase64,
-        doctorStatus: role === "doctor" ? "pending" : undefined,
-        parentCode: generatedParentCode, // بيتحفظ مع بيانات الأم
-        linkedToParentCode: role === "child" ? parentCodeInput : undefined // بيتحفظ مع بيانات الطفل عشان نعرف ابن مين
-      };
-      
-      existingUsers.push(newUser);
-      localStorage.setItem("tawasul_all_users", JSON.stringify(existingUsers));
-
+      // تخصيص رسالة النجاح والتوجه
       if (role === "doctor") {
-        setModalMessage("تم إنشاء حساب الطبيب بنجاح وجاري مراجعة الكارنيه! أهلاً بك دكتور.");
+        setModalMessage("تم إنشاء حساب الطبيب وحفظه في قاعدة البيانات السحابية، وطلب التوثيق قيد المراجعة!");
         setTargetRoute("/doctor-dashboard");
       } else if (role === "parent") {
-        setModalMessage("تم إنشاء الحساب بنجاح! أهلاً بك كولي أمر.");
+        setModalMessage(`تم إنشاء الحساب بنجاح! كود عائلتك لربط الأبناء هو: ${generatedParentCode}`);
         setTargetRoute("/parent-dashboard");
       } else {
-        setModalMessage("تم إنشاء الحساب بنجاح وربطه بحساب ولي أمرك يا بطل! 🚀");
+        setModalMessage("تم إنشاء الحساب بنجاح وربطه بولي أمرك وإدراجك في لوحة الشرف السحابية مع 100 نقطة ترحيبية! 🚀");
         setTargetRoute("/dashboard");
       }
 
       setShowModal(true);
-    };
-
-    if (role === "doctor" && idCardFile) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        saveUserDataAndRedirect(reader.result as string);
-      };
-      reader.readAsDataURL(idCardFile);
-    } else {
-      saveUserDataAndRedirect(null);
+    } catch (err: any) {
+      alert("حدث خطأ أثناء التسجيل: " + (err.message || "يرجى المحاولة لاحقاً"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,7 +156,7 @@ export default function SignupPage() {
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} style={{ maxWidth: "500px", width: "100%", margin: "0 auto", backgroundColor: "rgba(30, 39, 46, 0.9)", padding: "40px 20px", borderRadius: "30px", border: "2px solid rgba(255,255,255,0.1)", boxSizing: "border-box" }}>
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
           <h2 style={{ fontSize: "28px", color: "white", marginBottom: "10px" }}>إنشاء حساب جديد ✨</h2>
-          <p style={{ color: "#a0a0b5", fontSize: "15px" }}>انضم إلينا الآن، اختر نوع الحساب وأدخل بياناتك</p>
+          <p style={{ color: "#a0a0b5", fontSize: "15px" }}>انضم إلينا الآن، بياناتك تُحفظ مباشرة في السيرفر السحابي</p>
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "30px", flexWrap: "wrap" }}>
@@ -132,13 +181,12 @@ export default function SignupPage() {
             <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" style={{ width: "100%", padding: "14px", borderRadius: "12px", backgroundColor: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "white", fontSize: "16px", outline: "none", boxSizing: "border-box" }} />
           </div>
 
-          {/* 👇 يظهر كود ولي الأمر للطفل فقط 👇 */}
           <AnimatePresence>
             {role === "child" && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
                 <label style={{ display: "block", color: "#fdcb6e", marginBottom: "8px", fontSize: "14px", fontWeight: "bold" }}>كود ربط ولي الأمر 👨‍👩‍👧</label>
                 <input type="text" required={role === "child"} value={parentCodeInput} onChange={(e) => setParentCodeInput(e.target.value)} placeholder="مثال: PRNT-1234" style={{ width: "100%", padding: "14px", borderRadius: "12px", backgroundColor: "rgba(253, 203, 110, 0.1)", border: "1px solid #fdcb6e", color: "white", fontSize: "16px", outline: "none", boxSizing: "border-box" }} />
-                <p style={{ color: "#a0a0b5", fontSize: "12px", marginTop: "8px" }}>* اسأل والدتك/والدك عن هذا الكود بعد إنشاء حسابهم.</p>
+                <p style={{ color: "#a0a0b5", fontSize: "12px", marginTop: "8px" }}>* اسأل والدتك/والدك عن هذا الكود بعد إنشاء حسابهم المسجل في المنصة.</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -152,8 +200,8 @@ export default function SignupPage() {
             )}
           </AnimatePresence>
 
-          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" style={{ marginTop: "10px", padding: "15px", backgroundColor: "#0984e3", color: "white", border: "none", borderRadius: "15px", fontSize: "18px", fontWeight: "bold", cursor: "pointer" }}>
-            إنشاء حساب
+          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} disabled={loading} type="submit" style={{ marginTop: "10px", padding: "15px", backgroundColor: loading ? "#636e72" : "#0984e3", color: "white", border: "none", borderRadius: "15px", fontSize: "18px", fontWeight: "bold", cursor: loading ? "not-allowed" : "pointer" }}>
+            {loading ? "جاري إنشاء الحساب وحفظ البيانات..." : "إنشاء حساب"}
           </motion.button>
         </form>
 

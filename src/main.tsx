@@ -22,11 +22,10 @@ import CommunityPage from './CommunityPage';
 import AboutPage from './AboutPage';
 import SupportPage from './SupportPage'; // 👈 استدعاء صفحة الدعم الفني مرة واحدة بشكل صحيح
 import LeaderboardPage from './LeaderboardPage';
-// 👇 استدعاء صفحة الأدمين
 import AdminDashboard from './AdminDashboard';
 
-// 👇 استدعاء صفحة التواصل والاستشارات (نظام التذاكر)
-import ConsultationTickets from './ConsultationTickets';
+ import ConsultationTickets from './ConsultationTickets';
+ import EmotionGame from './EmotionGame'; // 👈 استدعاء صفحة لعبة المشاعر مرة واحدة بشكل صحيح
 
 import './index.css';
 import './App.css'; 
@@ -55,17 +54,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="/community" element={<CommunityPage />} />
           
           
-          {/* 👇 المسار الجديد للأدمين */}
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+           <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
-          {/* 👇 المسار الجديد للتواصل مع الأطباء (الاستشارات) */}
-          <Route path="/consultations" element={<ConsultationTickets />} />
+           <Route path="/consultations" element={<ConsultationTickets />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
-          {/* 👇 صفحة عن المنصة */}
-          <Route path="/about" element={<AboutPage />} />
+           <Route path="/about" element={<AboutPage />} />
 
-          {/* 👇 المسار الجديد لصفحة الدعم الفني والسبورت */}
-          <Route path="/support" element={<SupportPage />} />
+           <Route path="/support" element={<SupportPage />} />
+          <Route path="/emotions-game" element={<EmotionGame />} />
         </Routes>
       </div>
       <Footer />

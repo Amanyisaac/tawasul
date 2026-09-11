@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "./supabaseClient";
 import "./App.css";
 
-// 🌟 استيراد الصور بشكل صحيح عشان تترفع مع المشروع 🌟
+// استيراد صور الخطوات
 import sallah1 from "./assets/sallah1.png";
 import sallah2 from "./assets/sallah2.png";
 import sallah3 from "./assets/sallah3.png";
@@ -12,38 +14,86 @@ import sallah6 from "./assets/sallah6.png";
 import sallah7 from "./assets/sallah7.png";
 import sallah8 from "./assets/sallah8.png";
 
-// بيانات خطوات الصلاة بالترتيب مع استخدام المتغيرات
 const prayerSteps = [
-  { id: 1, title: "تكبيرة الإحرام", desc: "الوقوف واستقبال القبلة، ثم رفع اليدين بمحاذاة الأذنين وقول: (الله أكبر).",   img: sallah1 },
-  { id: 2, title: "القيام وقراءة الفاتحة", desc: "وضع اليد اليمنى فوق اليسرى على الصدر، وقراءة سورة الفاتحة وما تيسر من القرآن.",  img: sallah2 },
-  { id: 3, title: "الركوع", desc: "الانحناء بحيث يستوي الظهر، ووضع اليدين على الركبتين، وقول: (سبحان ربي العظيم) ثلاث مرات.",   img: sallah3 },
-  { id: 4, title: "الرفع من الركوع", desc: "الاعتدال واقفاً باطمئنان وقول: (سمع الله لمن حمده، ربنا ولك الحمد).",  img: sallah4 },
-  { id: 5, title: "السجود", desc: "النزول للأرض والسجود على الأعضاء السبعة، وقول: (سبحان ربي الأعلى) ثلاث مرات.",img: sallah5 },
-  { id: 6, title: "الجلوس بين السجدتين", desc: "الرفع من السجود والجلوس باطمئنان، وقول: (رب اغفر لي، وارحمني).",  img: sallah6 },
-  { id: 7, title: "التشهد", desc: "الجلوس بعد السجدة الثانية لقراءة التشهد، مع الإشارة بالسبابة عند ذكر الله.",   img:   sallah7 },
-  { id: 8, title: "التسليم", desc: "الالتفات يميناً وقول (السلام عليكم ورحمة الله)، ثم يساراً وقول مثلها لإنهاء الصلاة." ,img: sallah8 },
+  { id: 1, title: "تكبيرة الإحرام", desc: "الوقوف واستقبال القبلة، ثم رفع اليدين بمحاذاة الأذنين وقول: (الله أكبر).", img: sallah1 },
+  { id: 2, title: "القيام وقراءة الفاتحة", desc: "وضع اليد اليمنى فوق اليسرى على الصدر، وقراءة سورة الفاتحة وما تيسر من القرآن.", img: sallah2 },
+  { id: 3, title: "الركوع", desc: "الانحناء بحيث يستوي الظهر، ووضع اليدين على الركبتين، وقول: (سبحان ربي العظيم) ثلاث مرات.", img: sallah3 },
+  { id: 4, title: "الرفع من الركوع", desc: "الاعتدال واقفاً باطمئنان وقول: (سمع الله لمن حمده، ربنا ولك الحمد).", img: sallah4 },
+  { id: 5, title: "السجود", desc: "النزول للأرض والسجود على الأعضاء السبعة، وقول: (سبحان ربي الأعلى) ثلاث مرات.", img: sallah5 },
+  { id: 6, title: "الجلوس بين السجدتين", desc: "الرفع من السجود والجلوس باطمئنان، وقول: (رب اغفر لي، وارحمني).", img: sallah6 },
+  { id: 7, title: "التشهد", desc: "الجلوس بعد السجدة الثانية لقراءة التشهد، مع الإشارة بالسبابة عند ذكر الله.", img: sallah7 },
+  { id: 8, title: "التسليم", desc: "الالتفات يميناً وقول (السلام عليكم ورحمة الله)، ثم يساراً وقول مثلها لإنهاء الصلاة.", img: sallah8 },
 ];
 
 function PrayerPage() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   
   const [showPointsModal, setShowPointsModal] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
+  const [isSavingPoints, setIsSavingPoints] = useState(false);
+
+  // تسجيل النقاط سحابياً في Supabase عند إتمام الصلاة
+  const completePrayerAndSavePoints = async () => {
+    setIsCompleted(true);
+    setIsSavingPoints(true);
+
+    const userEmail = localStorage.getItem("userEmail");
+    const userName = localStorage.getItem("userName");
+    const localPoints = parseInt(localStorage.getItem("childPoints") || "0");
+    let currentDbPoints = localPoints;
+
+    try {
+      if (userEmail) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("points")
+          .eq("email", userEmail)
+          .single();
+
+        if (profile && typeof profile.points === "number") {
+          currentDbPoints = profile.points;
+        }
+      }
+
+      const updatedPoints = currentDbPoints + 10;
+
+      // تحديث جدول profiles
+      if (userEmail) {
+        await supabase
+          .from("profiles")
+          .update({ points: updatedPoints })
+          .eq("email", userEmail);
+      }
+
+      // تحديث جدول heroes للوحة الشرف
+      if (userName) {
+        await supabase
+          .from("heroes")
+          .update({ points: updatedPoints })
+          .eq("name", userName);
+      }
+
+      localStorage.setItem("childPoints", updatedPoints.toString());
+      setTotalPoints(updatedPoints);
+      setTimeout(() => setShowPointsModal(true), 400);
+    } catch (err) {
+      console.error("Error updating prayer points:", err);
+      const fallbackPoints = localPoints + 10;
+      localStorage.setItem("childPoints", fallbackPoints.toString());
+      setTotalPoints(fallbackPoints);
+      setTimeout(() => setShowPointsModal(true), 400);
+    } finally {
+      setIsSavingPoints(false);
+    }
+  };
 
   const nextStep = () => {
     if (currentStep < prayerSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      setIsCompleted(true);
-      const currentPoints = parseInt(localStorage.getItem("childPoints") || "0");
-      const newPoints = currentPoints + 10;
-      localStorage.setItem("childPoints", newPoints.toString());
-      setTotalPoints(newPoints);
-
-      setTimeout(() => {
-        setShowPointsModal(true);
-      }, 500);
+      completePrayerAndSavePoints();
     }
   };
 
@@ -58,8 +108,27 @@ function PrayerPage() {
   };
 
   return (
-    <div className="container" style={{ paddingTop: "100px", direction: "rtl", textAlign: "center", minHeight: "100vh", position: "relative" }}>
+    <div className="container" style={{ paddingTop: "100px", direction: "rtl", textAlign: "center", minHeight: "100vh", position: "relative", paddingBottom: "60px" }}>
       
+      {/* زر العودة السريع */}
+      <div style={{ maxWidth: "700px", margin: "0 auto 15px", display: "flex", justifyContent: "flex-start", padding: "0 15px" }}>
+        <button
+          onClick={() => navigate("/dashboard")}
+          style={{
+            padding: "8px 20px",
+            backgroundColor: "#ff7675",
+            color: "white",
+            border: "none",
+            borderRadius: "12px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "14px",
+          }}
+        >
+          ✕ العودة للرئيسية
+        </button>
+      </div>
+
       <AnimatePresence>
         {showPointsModal && (
           <div style={{ 
@@ -76,7 +145,6 @@ function PrayerPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: "spring", bounce: 0.5 }}
-              /* 👇 إضافة عرض 90% للمودال */
               style={{ 
                 backgroundColor: "#1e272e", 
                 padding: "40px", 
@@ -97,7 +165,7 @@ function PrayerPage() {
               </motion.div>
               <h2 style={{ color: "white", marginBottom: "15px", fontSize: "28px" }}>عاش يا بطل! 🦸‍♂️</h2>
               <p style={{ color: "#a0a0b5", fontSize: "18px", lineHeight: "1.6", marginBottom: "30px" }}>
-                كسبت <span style={{ color: "#fdcb6e", fontWeight: "bold" }}>10 نقاط</span> جديدة لتعلمك الصلاة.. <br/>
+                كسبت <span style={{ color: "#fdcb6e", fontWeight: "bold" }}>10 نقاط</span> جديدة ومسجلة سحابياً لتعلمك الصلاة.. <br/>
                 مجموع نقاطك أصبح: <span style={{ color: "#00b894", fontSize: "24px", fontWeight: "bold" }}>{totalPoints}</span>
               </p>
               <motion.button
@@ -128,13 +196,13 @@ function PrayerPage() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="title"
-        style={{ fontSize: "40px", marginBottom: "10px" }}
+        style={{ fontSize: "40px", marginBottom: "10px", color: "white" }}
       >
         تعلم الصلاة 🕌
       </motion.h1>
 
       <p style={{ color: "#a0a0b5", fontSize: "18px", marginBottom: "40px", padding: "0 15px" }}>
-        خطوة بخطوة لنتعلم كيف نصلي بخشوع
+        خطوة بخطوة لنتعلم كيف نصلي بخشوع ونكسب النقاط
       </p>
 
       {!isCompleted && (
@@ -255,27 +323,27 @@ function PrayerPage() {
             </AnimatePresence>
           </div>
 
-          {/* 👇 إضافة flexWrap لأزرار التحكم */}
           <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "15px", marginTop: "40px", paddingBottom: "50px" }}>
             <motion.button 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              disabled={isSavingPoints}
               onClick={nextStep} 
               style={{ 
                 padding: "15px 30px", 
                 fontSize: "18px", 
                 fontWeight: "bold",
-                backgroundColor: "#00b894", 
+                backgroundColor: isSavingPoints ? "#636e72" : "#00b894", 
                 color: "white", 
                 border: "none", 
                 borderRadius: "50px", 
-                cursor: "pointer",
+                cursor: isSavingPoints ? "wait" : "pointer",
                 boxShadow: "0 8px 15px rgba(0, 184, 148, 0.3)",
                 flex: "1 1 200px",
                 maxWidth: "300px"
               }}
             >
-              {currentStep === prayerSteps.length - 1 ? "أتممت الصلاة ✨" : "الخطوة التالية ◀"}
+              {currentStep === prayerSteps.length - 1 ? (isSavingPoints ? "جاري الحفظ..." : "أتممت الصلاة ✨") : "الخطوة التالية ◀"}
             </motion.button>
 
             <motion.button 

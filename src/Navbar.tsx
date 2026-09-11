@@ -88,13 +88,15 @@ export default function Navbar() {
     if (localPic) setChildPic(localPic);
   }, [location]);
 
-  // تحديث النقاط اللحظي من Supabase
+  // 🛠️ تم إصلاح خطأ الـ Realtime هنا عبر إنشاء معرف قناة ديناميكي وإلغاء الاشتراك بشكل آمن
   useEffect(() => {
     const userEmail = localStorage.getItem("userEmail");
-    if (!userEmail) return;
+    if (!userEmail || !isLoggedIn) return;
 
-    const channel = supabase
-      .channel("navbar_profile_changes")
+    const channelName = `navbar_profile_${Date.now()}`;
+    const channel = supabase.channel(channelName);
+
+    channel
       .on(
         "postgres_changes",
         {
@@ -117,6 +119,7 @@ export default function Navbar() {
       .subscribe();
 
     return () => {
+      channel.unsubscribe();
       supabase.removeChannel(channel);
     };
   }, [isLoggedIn]);
@@ -149,9 +152,9 @@ export default function Navbar() {
           right: 0,
           width: "100%",
           height: "65px",
-          backgroundColor: "#151a21", // معتم تماماً 100% لمنع ظهور أي شيء خلفه أثناء السكرول
+          backgroundColor: "#151a21",
           borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
-          zIndex: 999999, // أعلى طبقة في الصفحة كلها
+          zIndex: 999999,
           display: "flex",
           flexWrap: "nowrap",
           alignItems: "center",
@@ -199,7 +202,6 @@ export default function Navbar() {
             <Link to="/leaderboard" style={{ color: "#fdcb6e", textDecoration: "none", fontWeight: "bold", fontSize: "14px", whiteSpace: "nowrap" }}>
               🏆 {lang === "ar" ? "لوحة الشرف" : "Leaderboard"}
             </Link>
-            {/* يظهر فقط للمستخدم صاحب إيميل الأدمن المصرح به */}
             {isAdminUser && (
               <Link to="/admin-dashboard" style={{ color: "#ff7675", textDecoration: "none", fontWeight: "bold", fontSize: "14px", whiteSpace: "nowrap" }}>
                 ⚙️ {lang === "ar" ? "الإدارة" : "Admin"}
@@ -317,7 +319,6 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* حاجز بارتفاع 65px يحجز مكان الناف بار */}
       <div style={{ height: "65px", width: "100%", flexShrink: 0 }} />
 
       {/* قائمة الموبايل المنسدلة */}
@@ -358,7 +359,6 @@ export default function Navbar() {
             <Link to="/leaderboard" style={{ color: "#fdcb6e", textDecoration: "none", fontWeight: "bold", fontSize: "14px" }}>
               🏆 {lang === "ar" ? "لوحة الشرف" : "Leaderboard"}
             </Link>
-            {/* يظهر في الموبايل فقط لنفس الإيميل */}
             {isAdminUser && (
               <Link to="/admin-dashboard" style={{ color: "#ff7675", textDecoration: "none", fontWeight: "bold", fontSize: "14px" }}>
                 ⚙️ {lang === "ar" ? "لوحة الإدارة" : "Admin"}

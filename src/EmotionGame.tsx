@@ -3,25 +3,49 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 
+// 1. استيراد الصور من مجلد assets (حسب الأسماء في الـ VS Code)
+import imgBored from "./assets/Bored.png";
+import imgBrave from "./assets/Brave.png";
+import imgLonely from "./assets/lonely.png";
+import imgLoved from "./assets/loved.png";
+import imgPlayful from "./assets/Playful.png";
+import imgShy from "./assets/shy.png";
+
+// (ملاحظة: بدلي أرقام proud حسب الصورة المناسبة للشعور عندك)
+import imgHappy from "./assets/proud (1).png"; 
+import imgSad from "./assets/proud (2).png";
+import imgAngry from "./assets/proud (3).png";
+import imgExcited from "./assets/proud (4).png";
+import imgCalm from "./assets/proud (5).png";
+import imgTired from "./assets/proud (6).png";
+
 interface Emotion {
   id: string;
   nameAr: string;
   nameEn: string;
-  emoji: string;
+  image: string; // تم تغيير emoji إلى image
+  descAr: string; // الجملة الوصفية بالعربي
+  descEn: string; // الجملة الوصفية بالإنجليزي
   color: string;
   bgCard: string;
 }
 
+// 2. تحديث مصفوفة المشاعر لإضافة الصور والجمل المعبرة
 const emotionsData: Emotion[] = [
-  { id: "happy", nameAr: "فرحان وسعيد", nameEn: "Happy", emoji: "😊", color: "#00b894", bgCard: "rgba(0, 184, 148, 0.15)" },
-  { id: "sad", nameAr: "زعلان ومحبط", nameEn: "Sad", emoji: "😢", color: "#0984e3", bgCard: "rgba(9, 132, 227, 0.15)" },
-  { id: "angry", nameAr: "غاضب ومتعصب", nameEn: "Angry", emoji: "😡", color: "#ff7675", bgCard: "rgba(255, 118, 117, 0.15)" },
-  { id: "excited", nameAr: "متحمس ومنشط", nameEn: "Excited", emoji: "🤩", color: "#fdcb6e", bgCard: "rgba(253, 203, 110, 0.15)" },
-  { id: "calm", nameAr: "هادئ ومطمئن", nameEn: "Calm", emoji: "😌", color: "#00cec9", bgCard: "rgba(0, 206, 201, 0.15)" },
-  { id: "tired", nameAr: "متعب ومرهق", nameEn: "Tired", emoji: "😴", color: "#b2bec3", bgCard: "rgba(178, 190, 195, 0.15)" },
+  { id: "happy", nameAr: "فرحان وسعيد", nameEn: "Happy", image: imgHappy, descAr: "أشعر بطاقة إيجابية وفرح", descEn: "Feeling positive and joyful", color: "#00b894", bgCard: "rgba(0, 184, 148, 0.15)" },
+  { id: "sad", nameAr: "زعلان ومحبط", nameEn: "Sad", image: imgSad, descAr: "أحتاج لبعض العناق والمواساة", descEn: "Need some hugs and comfort", color: "#0984e3", bgCard: "rgba(9, 132, 227, 0.15)" },
+  { id: "angry", nameAr: "غاضب ومتعصب", nameEn: "Angry", image: imgAngry, descAr: "أشعر بالغضب وأحتاج للهدوء", descEn: "Feeling mad and need to calm down", color: "#ff7675", bgCard: "rgba(255, 118, 117, 0.15)" },
+  { id: "excited", nameAr: "متحمس ومنشط", nameEn: "Excited", image: imgExcited, descAr: "مستعد لمغامرة وتحدي جديد!", descEn: "Ready for a new adventure!", color: "#fdcb6e", bgCard: "rgba(253, 203, 110, 0.15)" },
+  { id: "calm", nameAr: "هادئ ومطمئن", nameEn: "Calm", image: imgCalm, descAr: "أشعر بالسلام والراحة", descEn: "Feeling peaceful and relaxed", color: "#00cec9", bgCard: "rgba(0, 206, 201, 0.15)" },
+  { id: "tired", nameAr: "متعب ومرهق", nameEn: "Tired", image: imgTired, descAr: "طاقتي قليلة وأحتاج للراحة", descEn: "Low energy, need to rest", color: "#b2bec3", bgCard: "rgba(178, 190, 195, 0.15)" },
+  { id: "bored", nameAr: "ملول وزهقان", nameEn: "Bored", image: imgBored, descAr: "أحتاج لشيء ممتع لأفعله", descEn: "Need something fun to do", color: "#95a5a6", bgCard: "rgba(149, 165, 166, 0.15)" },
+  { id: "brave", nameAr: "شجاع وقوي", nameEn: "Brave", image: imgBrave, descAr: "أستطيع مواجهة أي تحدي", descEn: "I can face any challenge", color: "#27ae60", bgCard: "rgba(39, 174, 96, 0.15)" },
+  { id: "lonely", nameAr: "وحيد ومنعزل", nameEn: "Lonely", image: imgLonely, descAr: "أرغب في اللعب مع أحد", descEn: "I want to play with someone", color: "#34495e", bgCard: "rgba(52, 73, 94, 0.15)" },
+  { id: "loved", nameAr: "محبوب وممتن", nameEn: "Loved", image: imgLoved, descAr: "أشعر بحب عائلتي وأصدقائي", descEn: "Feeling the love of family", color: "#e84393", bgCard: "rgba(232, 67, 147, 0.15)" },
+  { id: "playful", nameAr: "مرح ونشيط", nameEn: "Playful", image: imgPlayful, descAr: "أريد اللعب والضحك كثيراً", descEn: "I want to play and laugh", color: "#f39c12", bgCard: "rgba(243, 156, 18, 0.15)" },
+  { id: "shy", nameAr: "خجول ومكسوف", nameEn: "Shy", image: imgShy, descAr: "أشعر ببعض الخجل اليوم", descEn: "Feeling a bit shy today", color: "#8e44ad", bgCard: "rgba(142, 68, 173, 0.15)" },
 ];
 
-// إضافة onBack هنا لحل مشكلة TypeScript
 export default function EmotionGame({ onBack }: { onBack?: () => void }) {
   const navigate = useNavigate();
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
@@ -41,11 +65,10 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
     setLoading(true);
 
     const userEmail = localStorage.getItem("userEmail");
-    const earnedPoints = 15; // عدد النقاط المكتسبة
+    const earnedPoints = 15;
 
     try {
       if (userEmail) {
-        // 1. جلب النقاط الحالية للمستخدم وتحديثها في جدول profiles
         const { data: currentProfile } = await supabase
           .from("profiles")
           .select("points")
@@ -92,13 +115,14 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
       </div>
 
       {!submitted ? (
-        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
           
           {/* شبكة الكاردات - متجاوبة مع كل الشاشات */}
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              // تصغير العرض الأدنى للكارت ليناسب عدد المشاعر الأكبر في الشاشات الصغيرة
+              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", 
               gap: "20px",
               marginBottom: "30px",
             }}
@@ -115,17 +139,38 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
                     backgroundColor: emotion.bgCard,
                     border: isSelected ? `3px solid ${emotion.color}` : "2px solid rgba(255, 255, 255, 0.1)",
                     borderRadius: "20px",
-                    padding: "25px 15px",
+                    padding: "20px 10px",
                     textAlign: "center",
                     cursor: "pointer",
                     boxShadow: isSelected ? `0 0 20px ${emotion.color}` : "0 5px 15px rgba(0,0,0,0.3)",
                     transition: "all 0.3s ease",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "space-between"
                   }}
                 >
-                  <div style={{ fontSize: "50px", marginBottom: "12px" }}>{emotion.emoji}</div>
-                  <h3 style={{ color: "white", fontSize: "18px", margin: 0 }}>
-                    {lang === "ar" ? emotion.nameAr : emotion.nameEn}
-                  </h3>
+                  {/* عرض الصورة بدلاً من الإيموجي */}
+                  <img 
+                    src={emotion.image} 
+                    alt={emotion.nameEn} 
+                    style={{ 
+                      width: "80px", 
+                      height: "80px", 
+                      objectFit: "contain", 
+                      marginBottom: "15px",
+                      filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.4))"
+                    }} 
+                  />
+                  <div>
+                    <h3 style={{ color: "white", fontSize: "17px", margin: "0 0 8px", fontWeight: "bold" }}>
+                      {lang === "ar" ? emotion.nameAr : emotion.nameEn}
+                    </h3>
+                    {/* الجملة التعبيرية تحت الاسم */}
+                    <p style={{ color: "#d2dae2", fontSize: "12px", margin: 0, lineHeight: "1.4" }}>
+                      {lang === "ar" ? emotion.descAr : emotion.descEn}
+                    </p>
+                  </div>
                 </motion.div>
               );
             })}
@@ -146,9 +191,12 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
                   textAlign: "center",
                 }}
               >
-                <h3 style={{ color: "white", marginBottom: "12px", fontSize: "18px" }}>
-                  {lang === "ar" ? `لقد اخترت "${selectedEmotion.nameAr}" ${selectedEmotion.emoji}, هل تريد أن تحكي لنا السبب؟ (اختياري)` : `You chose "${selectedEmotion.nameEn}". Want to share why?`}
-                </h3>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "15px", marginBottom: "15px" }}>
+                  <img src={selectedEmotion.image} alt="Selected" style={{ width: "50px", height: "50px", objectFit: "contain" }} />
+                  <h3 style={{ color: "white", fontSize: "18px", margin: 0 }}>
+                    {lang === "ar" ? `لقد اخترت "${selectedEmotion.nameAr}", هل تريد أن تحكي لنا السبب؟ (اختياري)` : `You chose "${selectedEmotion.nameEn}". Want to share why?`}
+                  </h3>
+                </div>
                 
                 <textarea
                   value={reasonText}
@@ -215,7 +263,7 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
             +15 ⭐ {lang === "ar" ? "تمت إضافة النقاط لرصيدك!" : "Points added to your balance!"}
           </p>
           
-          <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: "10px", justifyContent: "center", flexWrap: "wrap" }}>
             <button
               onClick={() => {
                 setSelectedEmotion(null);

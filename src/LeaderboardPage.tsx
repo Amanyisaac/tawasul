@@ -93,7 +93,7 @@ export default function LeaderboardPage() {
         </h1>
         <p style={{ color: "#a0a0b5", textAlign: "center", marginBottom: "30px", fontSize: "16px" }}>
           {lang === "ar"
-            ? "تجميع لأكثر أبطال المنصة تفاعلاً وإنجازاً (تحديث حي مباشر ⚡)"
+            ? "تجميع لأكثر أبطال المنصة تفاعلاً وإنجازاً "
             : "All platform heroes ranked by activity and points (Live ⚡)"}
         </p>
 

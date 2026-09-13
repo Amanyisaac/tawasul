@@ -3,47 +3,67 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 
-// 1. استيراد الصور من مجلد assets (حسب الأسماء في الـ VS Code)
+// استيراد جميع الصور المطابقة تماماً لأسماء الملفات في مجلد assets
+import imgAngry from "./assets/angry.png";
 import imgBored from "./assets/Bored.png";
 import imgBrave from "./assets/Brave.png";
+import imgConcentrating from "./assets/Concentrating.png";
+import imgCurious from "./assets/Curious.png";
+import imgDisappointed from "./assets/Disappointed.png";
+import imgDisgusted from "./assets/Disgusted.png";
+import imgDreamy from "./assets/Dreamy.png";
+import imgEmbarrassed from "./assets/Embarrassed.png";
+import imgGrumpy from "./assets/Grumpy.png";
+import imgHappy from "./assets/happy.png";
+import imgImpatient from "./assets/Impatient.png";
+import imgJealous from "./assets/Jealous.png";
 import imgLonely from "./assets/lonely.png";
 import imgLoved from "./assets/loved.png";
 import imgPlayful from "./assets/Playful.png";
+import imgProud from "./assets/proud (1).png";
+import imgSad from "./assets/sad.png";
 import imgShy from "./assets/shy.png";
-
-// (ملاحظة: بدلي أرقام proud حسب الصورة المناسبة للشعور عندك)
-import imgHappy from "./assets/proud (1).png"; 
-import imgSad from "./assets/proud (2).png";
-import imgAngry from "./assets/proud (3).png";
-import imgExcited from "./assets/proud (4).png";
-import imgCalm from "./assets/proud (5).png";
-import imgTired from "./assets/proud (6).png";
+import imgSick from "./assets/sick.png";
+import imgSleep from "./assets/sleep.png";
+import imgSorry from "./assets/sorry.png";
+import imgSurprised from "./assets/Surprised.png";
 
 interface Emotion {
   id: string;
   nameAr: string;
   nameEn: string;
-  image: string; // تم تغيير emoji إلى image
-  descAr: string; // الجملة الوصفية بالعربي
-  descEn: string; // الجملة الوصفية بالإنجليزي
+  image: string;
+  descAr: string;
+  descEn: string;
   color: string;
   bgCard: string;
 }
 
-// 2. تحديث مصفوفة المشاعر لإضافة الصور والجمل المعبرة
+// مكتبة المشاعر الشاملة 23 شعوراً
 const emotionsData: Emotion[] = [
   { id: "happy", nameAr: "فرحان وسعيد", nameEn: "Happy", image: imgHappy, descAr: "أشعر بطاقة إيجابية وفرح", descEn: "Feeling positive and joyful", color: "#00b894", bgCard: "rgba(0, 184, 148, 0.15)" },
   { id: "sad", nameAr: "زعلان ومحبط", nameEn: "Sad", image: imgSad, descAr: "أحتاج لبعض العناق والمواساة", descEn: "Need some hugs and comfort", color: "#0984e3", bgCard: "rgba(9, 132, 227, 0.15)" },
   { id: "angry", nameAr: "غاضب ومتعصب", nameEn: "Angry", image: imgAngry, descAr: "أشعر بالغضب وأحتاج للهدوء", descEn: "Feeling mad and need to calm down", color: "#ff7675", bgCard: "rgba(255, 118, 117, 0.15)" },
-  { id: "excited", nameAr: "متحمس ومنشط", nameEn: "Excited", image: imgExcited, descAr: "مستعد لمغامرة وتحدي جديد!", descEn: "Ready for a new adventure!", color: "#fdcb6e", bgCard: "rgba(253, 203, 110, 0.15)" },
-  { id: "calm", nameAr: "هادئ ومطمئن", nameEn: "Calm", image: imgCalm, descAr: "أشعر بالسلام والراحة", descEn: "Feeling peaceful and relaxed", color: "#00cec9", bgCard: "rgba(0, 206, 201, 0.15)" },
-  { id: "tired", nameAr: "متعب ومرهق", nameEn: "Tired", image: imgTired, descAr: "طاقتي قليلة وأحتاج للراحة", descEn: "Low energy, need to rest", color: "#b2bec3", bgCard: "rgba(178, 190, 195, 0.15)" },
+  { id: "sleep", nameAr: "متعب ومرهق", nameEn: "Tired / Sleepy", image: imgSleep, descAr: "طاقتي قليلة وأحتاج للنوم", descEn: "Low energy, need to sleep", color: "#b2bec3", bgCard: "rgba(178, 190, 195, 0.15)" },
+  { id: "playful", nameAr: "مرح ونشيط", nameEn: "Playful", image: imgPlayful, descAr: "أريد اللعب والضحك كثيراً", descEn: "I want to play and laugh", color: "#f1c40f", bgCard: "rgba(241, 196, 15, 0.15)" },
+  { id: "proud", nameAr: "فخور وواثق", nameEn: "Proud", image: imgProud, descAr: "أنا فخور بما أنجزته اليوم", descEn: "Proud of what I achieved", color: "#6c5ce7", bgCard: "rgba(108, 92, 231, 0.15)" },
   { id: "bored", nameAr: "ملول وزهقان", nameEn: "Bored", image: imgBored, descAr: "أحتاج لشيء ممتع لأفعله", descEn: "Need something fun to do", color: "#95a5a6", bgCard: "rgba(149, 165, 166, 0.15)" },
   { id: "brave", nameAr: "شجاع وقوي", nameEn: "Brave", image: imgBrave, descAr: "أستطيع مواجهة أي تحدي", descEn: "I can face any challenge", color: "#27ae60", bgCard: "rgba(39, 174, 96, 0.15)" },
-  { id: "lonely", nameAr: "وحيد ومنعزل", nameEn: "Lonely", image: imgLonely, descAr: "أرغب في اللعب مع أحد", descEn: "I want to play with someone", color: "#34495e", bgCard: "rgba(52, 73, 94, 0.15)" },
-  { id: "loved", nameAr: "محبوب وممتن", nameEn: "Loved", image: imgLoved, descAr: "أشعر بحب عائلتي وأصدقائي", descEn: "Feeling the love of family", color: "#e84393", bgCard: "rgba(232, 67, 147, 0.15)" },
-  { id: "playful", nameAr: "مرح ونشيط", nameEn: "Playful", image: imgPlayful, descAr: "أريد اللعب والضحك كثيراً", descEn: "I want to play and laugh", color: "#f39c12", bgCard: "rgba(243, 156, 18, 0.15)" },
-  { id: "shy", nameAr: "خجول ومكسوف", nameEn: "Shy", image: imgShy, descAr: "أشعر ببعض الخجل اليوم", descEn: "Feeling a bit shy today", color: "#8e44ad", bgCard: "rgba(142, 68, 173, 0.15)" },
+  { id: "concentrating", nameAr: "مركز ومندمج", nameEn: "Concentrating", image: imgConcentrating, descAr: "أفكر بعمق في إنجاز مهمتي", descEn: "Thinking deeply about my task", color: "#16a085", bgCard: "rgba(22, 160, 133, 0.15)" },
+  { id: "curious", nameAr: "فضولي ومتساءل", nameEn: "Curious", image: imgCurious, descAr: "أريد أن أتعلم وأستكشف", descEn: "I want to learn and explore", color: "#f39c12", bgCard: "rgba(243, 156, 18, 0.15)" },
+  { id: "disappointed", nameAr: "محبط وخائب الأمل", nameEn: "Disappointed", image: imgDisappointed, descAr: "الأمور لم تسر كما تمنيت", descEn: "Things didn't go as I hoped", color: "#7f8c8d", bgCard: "rgba(127, 140, 141, 0.15)" },
+  { id: "disgusted", nameAr: "مشمئز ومنزعج", nameEn: "Disgusted", image: imgDisgusted, descAr: "لا أحب هذا الشيء أبداً", descEn: "I really don't like this", color: "#8e44ad", bgCard: "rgba(142, 68, 173, 0.15)" },
+  { id: "dreamy", nameAr: "حالم ومتفائل", nameEn: "Dreamy", image: imgDreamy, descAr: "أتخيل أشياء جميلة ورائعة", descEn: "Imagining beautiful things", color: "#3498db", bgCard: "rgba(52, 152, 219, 0.15)" },
+  { id: "embarrassed", nameAr: "محرج ومكسوف", nameEn: "Embarrassed", image: imgEmbarrassed, descAr: "أشعر ببعض الإحراج مما حدث", descEn: "Feeling a bit embarrassed", color: "#e84393", bgCard: "rgba(232, 67, 147, 0.15)" },
+  { id: "grumpy", nameAr: "متعكر المزاج", nameEn: "Grumpy", image: imgGrumpy, descAr: "مزاجي ليس جيداً الآن", descEn: "Not in a good mood right now", color: "#d35400", bgCard: "rgba(211, 84, 0, 0.15)" },
+  { id: "impatient", nameAr: "غير صبور", nameEn: "Impatient", image: imgImpatient, descAr: "أجد صعوبة في الانتظار", descEn: "Finding it hard to wait", color: "#c0392b", bgCard: "rgba(192, 57, 43, 0.15)" },
+  { id: "jealous", nameAr: "غيران", nameEn: "Jealous", image: imgJealous, descAr: "أشعر بالغيرة قليلاً", descEn: "Feeling a little jealous", color: "#2ecc71", bgCard: "rgba(46, 204, 113, 0.15)" },
+  { id: "lonely", nameAr: "وحيد ومنعزل", nameEn: "Lonely", image: imgLonely, descAr: "أرغب في صديق يلعب معي", descEn: "Want a friend to play with", color: "#34495e", bgCard: "rgba(52, 73, 94, 0.15)" },
+  { id: "loved", nameAr: "محبوب وممتن", nameEn: "Loved", image: imgLoved, descAr: "أشعر بحب عائلتي وأصدقائي", descEn: "Feeling the love of my family", color: "#fd79a8", bgCard: "rgba(253, 121, 168, 0.15)" },
+  { id: "shy", nameAr: "خجول", nameEn: "Shy", image: imgShy, descAr: "أشعر ببعض الخجل اليوم", descEn: "Feeling a bit shy today", color: "#9b59b6", bgCard: "rgba(155, 89, 182, 0.15)" },
+  { id: "sick", nameAr: "مريض ومتألم", nameEn: "Sick", image: imgSick, descAr: "جسدي يؤلمني وأحتاج للطبيب", descEn: "My body hurts, need care", color: "#1abc9c", bgCard: "rgba(26, 188, 156, 0.15)" },
+  { id: "sorry", nameAr: "متأسف وندمان", nameEn: "Sorry", image: imgSorry, descAr: "أعتذر لأنني أخطأت", descEn: "I apologize for my mistake", color: "#e67e22", bgCard: "rgba(230, 126, 34, 0.15)" },
+  { id: "surprised", nameAr: "متفاجئ ومندهش", nameEn: "Surprised", image: imgSurprised, descAr: "لم أتوقع حدوث هذا!", descEn: "Didn't expect this to happen!", color: "#fdcb6e", bgCard: "rgba(253, 203, 110, 0.15)" }
 ];
 
 export default function EmotionGame({ onBack }: { onBack?: () => void }) {
@@ -97,14 +117,12 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "transparent", padding: "10px 15px", direction: lang === "ar" ? "rtl" : "ltr", boxSizing: "border-box" }}>
       
-      {/* زر العودة لقائمة الألعاب */}
       {onBack && (
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
           <button onClick={onBack} style={{ padding: "10px 20px", backgroundColor: "#ff7675", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", fontWeight: "bold" }}>العودة للألعاب ✕</button>
         </div>
       )}
 
-      {/* عنوان اللعبة */}
       <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto 30px auto" }}>
         <h1 style={{ color: "white", fontSize: "28px", marginBottom: "10px" }}>
           {lang === "ar" ? "🎨 ركن المشاعر والأحاسيس" : "🎨 Feelings Corner"}
@@ -115,14 +133,11 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
       </div>
 
       {!submitted ? (
-        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
-          
-          {/* شبكة الكاردات - متجاوبة مع كل الشاشات */}
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div
             style={{
               display: "grid",
-              // تصغير العرض الأدنى للكارت ليناسب عدد المشاعر الأكبر في الشاشات الصغيرة
-              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", 
+              gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", 
               gap: "20px",
               marginBottom: "30px",
             }}
@@ -150,7 +165,6 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
                     justifyContent: "space-between"
                   }}
                 >
-                  {/* عرض الصورة بدلاً من الإيموجي */}
                   <img 
                     src={emotion.image} 
                     alt={emotion.nameEn} 
@@ -166,7 +180,6 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
                     <h3 style={{ color: "white", fontSize: "17px", margin: "0 0 8px", fontWeight: "bold" }}>
                       {lang === "ar" ? emotion.nameAr : emotion.nameEn}
                     </h3>
-                    {/* الجملة التعبيرية تحت الاسم */}
                     <p style={{ color: "#d2dae2", fontSize: "12px", margin: 0, lineHeight: "1.4" }}>
                       {lang === "ar" ? emotion.descAr : emotion.descEn}
                     </p>
@@ -176,7 +189,6 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
             })}
           </div>
 
-          {/* خانة الكتابة تظهر فور اختيار أي شعور */}
           <AnimatePresence>
             {selectedEmotion && (
               <motion.div
@@ -189,10 +201,12 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
                   borderRadius: "20px",
                   border: `2px solid ${selectedEmotion.color}`,
                   textAlign: "center",
+                  maxWidth: "800px",
+                  margin: "0 auto"
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "15px", marginBottom: "15px" }}>
-                  <img src={selectedEmotion.image} alt="Selected" style={{ width: "50px", height: "50px", objectFit: "contain" }} />
+                  <img src={selectedEmotion.image} alt="Selected" style={{ width: "60px", height: "60px", objectFit: "contain" }} />
                   <h3 style={{ color: "white", fontSize: "18px", margin: 0 }}>
                     {lang === "ar" ? `لقد اخترت "${selectedEmotion.nameAr}", هل تريد أن تحكي لنا السبب؟ (اختياري)` : `You chose "${selectedEmotion.nameEn}". Want to share why?`}
                   </h3>
@@ -238,10 +252,8 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
               </motion.div>
             )}
           </AnimatePresence>
-
         </div>
       ) : (
-        /* شاشة النجاح عند إرسال الشعور */
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -298,7 +310,6 @@ export default function EmotionGame({ onBack }: { onBack?: () => void }) {
           </div>
         </motion.div>
       )}
-
     </div>
   );
 }
